@@ -20,6 +20,11 @@ extern upy;
 extern upz;
 extern fov;
 
+
+//***************************//
+//  Geometry Specifications  //
+//***************************//
+
 // specifies the number of vertrices for tri specifications
 extern maxverts;
 
@@ -27,9 +32,27 @@ extern maxverts;
 extern maxvertnorms;
 
 // pile of inputted vertices
-extern verts[];
+// might need to #include glm file                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+extern vector<glm::vec3> vertices;
 
-// pile of inputted vertices with associated normals
-extern vertnorms[];
+// pile of inputted vertices with specified normals
+extern vector<vertexnormal> vertnormals;
+
+// pile of inputted spheres
+extern vector<sphere> spheres;
+
+// pile of inputted triangles
+extern vector<tri> triangles;
+
+// pile of inputted triangles using vertices with specified normals 
+extern vector<trinormal> trinormals;
 
 
+//**************************//
+//  Materials Specifiations //
+//**************************//
+
+extern float diffuse[3];
+extern float specular[3];
+extern float shininess;
+extern float emission[3];

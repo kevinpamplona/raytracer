@@ -1,4 +1,4 @@
 // readfile.cpp defnitions
 
-bool readvals (stringstream &s, const int numvals, GLfloat * values);
-void readfile (const char * filename);
+bool readVals (stringstream &s, const int numvals, GLfloat * values);
+void readFile (const char * filename);
