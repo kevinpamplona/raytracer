@@ -2,64 +2,73 @@
 #include "sphere.h"
 #include "tri.h"
 #include "trinormal.h"
+#include "vec.h"
 
-#include <glm/glm.hpp>
-
+#include <string>
 #include <vector>
 
+using namespace std;
+
 // width and height specify image size
-extern width;
-extern height;
+float width;
+float height;
 
 // maximum depth for a ray (level of recursion)
-extern depth;
+int depth;
 
 // the output file to which the image should be written
-extern filename;
+string filename;
 
 // camera specifiations (should i put in a struct?)
-extern lookfromx;
-extern lookfromy;
-extern lookfromz;
-extern lookatx;
-extern lookaty;
-extern lookatz;
-extern upx;
-extern upy;
-extern upz;
-extern fov;
+float lookfromx;
+float lookfromy;
+float lookfromz;
+float lookatx;
+float lookaty;
+float lookatz;
+float upx;
+float upy;
+float upz;
+float fov;
 
 //***************************//
 //  Geometry Specifications  //
 //***************************//
 
 // specifies the number of vertrices for tri specifications
-extern maxverts;
+ int maxverts;
 
 // specifies the number of vertices with normals for tri specifications
-extern maxvertnorms;
+ int maxvertnorms;
 
 // pile of inputted vertices
 // might need to #include glm file                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-extern vector<glm::vec3> vertices;
+vector<vec> vertices;
 
 // pile of inputted vertices with specified normals
-extern vector<vertexnormal> vertnormals;
+vector<vertexNormal> vertnormals;
 
 // pile of inputted spheres
-extern vector<sphere> spheres;
+vector<sphere> spheres;
 
 // pile of inputted triangles
-extern vector<tri> triangles;
+vector<tri> triangles;
 
 // pile of inputted triangles using vertices with specified normals 
-extern vector<trinormal> trinormals;
+vector<triNormal> trinormals;
+
+int vertexcount;
+int vertexnormcount;
+int spherecount;
+int tricount;
+int trinormcount;
 
 //**************************//
 //  Materials Specifiations //
 //**************************//
 
-extern float diffuse[3];
-extern float specular[3];
-extern float shininess;
-extern float emission[3];
+float diffuse[3];
+float specular[3];
+float shininess;
+float emission[3];
+

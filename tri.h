@@ -1,6 +1,3 @@
-#include <glm/glm.hpp>
-
-typedef glm::vec3 vec3;
 
 #ifndef _tri_h
 #define _tri_h
@@ -11,9 +8,8 @@ struct tri
     int v2;
     int v3;
     
-    // might need to include glm file
-    vec3 normal;
-}
+    float normal[3];
+};
 
 
 #endif

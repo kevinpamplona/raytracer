@@ -7,6 +7,6 @@ struct triNormal
     int v1;
     int v2;
     int v3;
-}
+};
 
 #endif

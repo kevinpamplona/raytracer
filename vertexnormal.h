@@ -11,6 +11,6 @@ struct vertexNormal
     float nx;
     float ny;
     float nz;
-}
+};
 
 #endif

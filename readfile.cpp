@@ -3,16 +3,19 @@
 #include <fstream>
 #include <sstream>
 
-#include "readfile.h"
-#include "variables.h"
 #include "Objects.h"
 
+using namespace std;
+
+#include "readfile.h"
+#include "variables.h"
+
 // helper function to read input data files
-bool readVals(stringstream &s, const int numvals, float * values) {
+bool readVals(std::stringstream &s, const int numvals, float * values) {
     for (int i = 0 ; i < numvals ; i++) {
         s >> values[i] ;
         if (s.fail()) {
-            cout << "Failed reading value " << i << " will skip\n" ;
+            std::cout << "Failed reading value " << i << " will skip\n" ;
             return false ;
         }
     }
@@ -30,7 +33,7 @@ void initCamera(float * values) {
     upx = values[6];
     upy = values[7];
     upz = values[8];
-    ov = values[9];
+    fov = values[9];
 }
 
 void readFile(const char * filename) {
@@ -39,19 +42,20 @@ void readFile(const char * filename) {
     ifstream in;
     in.open(filename);
     
+    float values[10];
+    bool validinput;
+    
     if (in.is_open()) {
         
         getline(in, str);
         
         while (in) {
             // following if-statement ignores comments and blank lines
-            if ((str.find_first_not_of(" \t\r\n") != string:npos) && (str[0] != '#')) {
+            if ((str.find_first_not_of(" \t\r\n") != string::npos) && (str[0] != '#')) {
                 
-                stringstream s(str);
+                stringstream s (str);
                 s >> cmd;
-                
-                float values[10];
-                bool validinput;
+                                 
                 
                 // GENERAL commands
                 if (cmd == "size") {
@@ -68,11 +72,8 @@ void readFile(const char * filename) {
                     }
                 }
                 else if (cmd == "output") {
-                    validinput = readVals(s, 1, values);
-                    if (validinput) {
-                        filename = values[0];
+                        //s >> filename;
                     }
-                }
                 // EO GENERAL commands
                 
                 // CAMERA command
@@ -100,32 +101,32 @@ void readFile(const char * filename) {
                 else if (cmd == "vertex") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
-                        vertices.push_back(Objects::makeVertex(values));
+                        vertices.push_back(makeVertex(values));
                     }
                 }
                 else if (cmd == "vertexnormal") {
                     validinput = readVals(s, 6, values);
                     if (validinput) {
-                        vertnormals.push_back(Objects::makeVertNormal(values));
+                        vertnormals.push_back(makeVertNormal(values));
                     }
                 }
                 
                 else if (cmd == "sphere") {
                     validinput = readVals(s, 4, values);
                     if (validinput) {
-                        spheres.push_back(Objects::makeSphere(values));
+                        spheres.push_back(makeSphere(values));
                     }
                 }
                 else if (cmd == "tri") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
-                        triangles.push_back(Objects::makeTriagle(values));
+                        triangles.push_back(makeTriangle(values));
                     }
                 }
                 else if (cmd == "trinormal") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
-                        trinormals.push_back(Objects::makeTriNormal(values));
+                        trinormals.push_back(makeTriNormal(values));
                     }
                 }
                 
@@ -172,10 +173,13 @@ void readFile(const char * filename) {
                     }
                 }
             }
-            
+            else {
+                cerr << "Unknown Command: " << cmd << " Skipping \n" ;
+            }
             getline(in, str);
         }
-    } else {
+    }
+    else {
         cerr << "UNABLE TO OPEN INPUT DATA FILE: " << filename << "\n";
         throw 2;
     }

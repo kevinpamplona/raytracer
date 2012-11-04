@@ -9,6 +9,6 @@ struct sphere
     float z;
     
     float radius;
-}
+};
 
 #endif

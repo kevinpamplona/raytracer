@@ -1,12 +1,19 @@
 #include "Objects.h"
 
+
 // helper function to create a vertex
-vec3 Objects::makeVertex(float * values) {
-    return vec3(values[0], values[1], values[2]);
+vec makeVertex(float * values) {
+    vec v;
+    
+    v.x = values[0];
+    v.y = values[1];
+    v.z = values[2];
+    
+    return v;
 }
 
 // helper function to create a vertex with specified normals
-struct vertexNormal Objects::makeVertNormal(float * values) {
+vertexNormal makeVertNormal(float * values) {
     vertexNormal vn;
     
     vn.x = values[0];
@@ -21,7 +28,7 @@ struct vertexNormal Objects::makeVertNormal(float * values) {
 }
 
 // helper function to create a sphere
-struct sphere Objects::makeSphere(float * values) {
+sphere makeSphere(float * values) {
     sphere s;
     
     s.x = values[0];
@@ -34,34 +41,23 @@ struct sphere Objects::makeSphere(float * values) {
 }
 
 // helper function to create a triangle
-struct tri Objects::makeTriangle(float * values) {
+tri makeTriangle(float * values) {
     tri t;
     
-    t.x = values[0];
-    t.y = values[1];
-    t.z = values[2]
-    // face normal calculated later
+    t.v1 = values[0];
+    t.v2 = values[1];
+    t.v3 = values[2];
     
     return t;
 }
 
 // helper function to create triangle with vertices that have specified normals
-struct triNormal Objects::makeTriNormal(float * values) {
-    trinormal tn;
+triNormal makeTriNormal(float * values) {
+    triNormal tn;
     
-    tn.x = values[0];
-    tn.y = values[1];
-    tn.z = values[2];
+    tn.v1 = values[0];
+    tn.v2 = values[1];
+    tn.v3 = values[2];
     
     return tn;
-}
-
-Objects::Objects()
-{
-    
-}
-
-Objects::~Objects()
-{
-    
 }

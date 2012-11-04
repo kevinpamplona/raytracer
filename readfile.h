@@ -1,4 +1,5 @@
 // readfile.cpp defnitions
 
-bool readVals (stringstream &s, const int numvals, GLfloat * values);
+bool readVals (std::stringstream &s, const int numvals, float * values);
+void initCamera (float * values);
 void readFile (const char * filename);

@@ -3,17 +3,19 @@
 #include <fstream>
 #include <sstream>
 
-#include "readfile.h"
-#include "variables.h"
 #include "Objects.h"
 
+using namespace std;
+
+#include "readfile.h"
+#include "variables.h"
+
+
 void init() {
-    readFile(argv[1]);
-    
     cout << "Reading in scene file... \n";
     cout << "Image size has been set to a " << width << " x " << height << " output. /n";
     cout << "The maximum recursion depth has been set to " << depth << ". \n";
-    cout << "The image will be output to " << output << ".png. \n";
+    cout << "The image will be output to " << filename << ".png. \n";
     
     cout << "The camera has been instantiated with the following properties: \n";
     cout << "\t POSITION: (" << lookfromx << ", " << lookfromy << ", " << lookfromz << ") \n";
@@ -31,6 +33,7 @@ void init() {
 
 
 int main (int argc, char * argv[]) {
+    readFile(argv[1]);
     init();
     return 0;
 }
