@@ -2,8 +2,8 @@
 
 
 // helper function to create a vertex
-vec makeVertex(float * values) {
-    vec v;
+glm::vec3 makeVertex(float * values) {
+    glm::vec3 v;
     
     v.x = values[0];
     v.y = values[1];
@@ -11,6 +11,7 @@ vec makeVertex(float * values) {
     
     return v;
 }
+ 
 
 // helper function to create a vertex with specified normals
 vertexNormal makeVertNormal(float * values) {

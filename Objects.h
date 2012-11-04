@@ -4,7 +4,10 @@
 #include "trinormal.h"
 #include "vec.h"
 
-vec makeVertex(float * values);
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+glm::vec3 makeVertex(float * values);
 vertexNormal makeVertNormal(float * values);
 sphere makeSphere(float * values);
 tri makeTriangle(float * values);

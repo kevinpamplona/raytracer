@@ -46,7 +46,7 @@ extern int maxvertnorms;
 
 // pile of inputted vertices
 // might need to #include glm file                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-extern vector<vec> vertices;
+extern vector<glm::vec3> vertices;
 
 // pile of inputted vertices with specified normals
 extern vector<vertexNormal> vertnormals;

@@ -24,7 +24,7 @@ string filename = "output";
 // camera specifiations (should i put in a struct?)
 float lookfromx = 0;
 float lookfromy = 0;
-float lookfromz= 0;
+float lookfromz = 0;
 float lookatx = 0;
 float lookaty = 0;
 float lookatz = 0;
@@ -45,7 +45,7 @@ int maxvertnorms = 0;
 
 // pile of inputted vertices
 // might need to #include glm file
-vector<vec> vertices;
+vector<glm::vec3> vertices;
 
 // pile of inputted vertices with specified normals
 vector<vertexNormal> vertnormals;
