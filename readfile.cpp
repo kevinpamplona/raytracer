@@ -101,12 +101,14 @@ void readFile(const char * filename) {
                 else if (cmd == "vertex") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
+                        vertexcount += 1;
                         vertices.push_back(makeVertex(values));
                     }
                 }
                 else if (cmd == "vertexnormal") {
                     validinput = readVals(s, 6, values);
                     if (validinput) {
+                        vertexnormcount += 1;
                         vertnormals.push_back(makeVertNormal(values));
                     }
                 }
@@ -114,18 +116,21 @@ void readFile(const char * filename) {
                 else if (cmd == "sphere") {
                     validinput = readVals(s, 4, values);
                     if (validinput) {
+                        spherecount += 1;
                         spheres.push_back(makeSphere(values));
                     }
                 }
                 else if (cmd == "tri") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
+                        tricount += 1;
                         triangles.push_back(makeTriangle(values));
                     }
                 }
                 else if (cmd == "trinormal") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
+                        trinormcount += 1;
                         trinormals.push_back(makeTriNormal(values));
                     }
                 }
