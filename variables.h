@@ -4,6 +4,10 @@
 #include "trinormal.h"
 #include "vec.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+
 #include <string>
 #include <vector>
 
@@ -74,6 +78,12 @@ extern float diffuse[3];
 extern float specular[3];
 extern float shininess;
 extern float emission[3];
+
+//**************************//
+//    Final Output Image    //
+//**************************//
+
+extern vector<glm::vec3> image;
 
 #endif
 
