@@ -48,8 +48,9 @@ void readFile(const char * filename) {
     if (in.is_open()) {
         
         getline(in, str);
-        
         while (in) {
+            //cout << "Reading current line: [" << str << "] \n";
+            //cout << "First character in the string is: " << str[0] << " \n";
             // following if-statement ignores comments and blank lines
             if ((str.find_first_not_of(" \t\r\n") != string::npos) && (str[0] != '#')) {
                 
@@ -177,11 +178,12 @@ void readFile(const char * filename) {
                         }
                     }
                 }
-            }
-            else {
-                cerr << "Unknown Command: " << cmd << " Skipping \n" ;
+                else {
+                    cerr << "Unknown Command: " << cmd << " Skipping \n";
+                }
             }
             getline(in, str);
+            //cout << "Reading current line: [" << str << "] \n";
         }
     }
     else {

@@ -7,4 +7,5 @@ readfile.o: readfile.cpp readfile.h
 	g++ -c readfile.cpp 
 Objects.o: Objects.cpp Objects.h
 	g++ -c Objects.cpp
-clean: rm -f *.o raytracer
+clean: 
+	rm -f *.o raytracer
