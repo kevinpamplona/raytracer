@@ -1,3 +1,6 @@
+#include <glm/glm.hpp>
+
+typedef glm::vec3 vec3;
 
 #ifndef _tri_h
 #define _tri_h

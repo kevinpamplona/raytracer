@@ -1,3 +1,12 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
+
+#include "readfile.h"
+#include "variables.h"
+#include "Objects.h"
+
 // helper function to read input data files
 bool readVals(stringstream &s, const int numvals, float * values) {
     for (int i = 0 ; i < numvals ; i++) {
@@ -22,58 +31,6 @@ void initCamera(float * values) {
     upy = values[7];
     upz = values[8];
     ov = values[9];
-}
-
-// helper function to make vertex
-vec3 makeVertex(float * values) {
-    return vec3(values[0], values[1], values[2]);
-}
-
-struct vertexNormal makeVertNormal(float * values) {
-    vertexNormal vn;
-    
-    vn.x = values[0];
-    vn.y = values[1];
-    vn.z = values[2];
-    
-    vn.nx = values[3];
-    vn.ny = values[4];
-    vn.nz = values[5];
-    
-    return vn;
-}
-
-struct sphere makeSphere(float * values) {
-    sphere s;
-    
-    s.x = values[0];
-    s.y = values[1];
-    s.z = values[2];
-    
-    s.radius = values[3];
-    
-    return s;
-}
-
-struct tri makeTriangle(float * values) {
-    tri t;
-    
-    t.x = values[0];
-    t.y = values[1];
-    t.z = values[2]
-    // face normal calculated later
-    
-    return t;
-}
-
-struct triNormal makeTriNormal(float * values) {
-    trinormal tn;
-    
-    tn.x = values[0];
-    tn.y = values[1];
-    tn.z = values[2];
-    
-    return tn;
 }
 
 void readFile(const char * filename) {
@@ -143,32 +100,32 @@ void readFile(const char * filename) {
                 else if (cmd == "vertex") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
-                        vertices.push_back(makeVertex(values));
+                        vertices.push_back(Objects::makeVertex(values));
                     }
                 }
                 else if (cmd == "vertexnormal") {
                     validinput = readVals(s, 6, values);
                     if (validinput) {
-                        vertnormals.push_back(makeVertNormal(values));
+                        vertnormals.push_back(Objects::makeVertNormal(values));
                     }
                 }
                 
                 else if (cmd == "sphere") {
                     validinput = readVals(s, 4, values);
                     if (validinput) {
-                        spheres.push_back(makeSphere(values));
+                        spheres.push_back(Objects::makeSphere(values));
                     }
                 }
                 else if (cmd == "tri") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
-                        triangles.push_back(makeTriagle(values));
+                        triangles.push_back(Objects::makeTriagle(values));
                     }
                 }
                 else if (cmd == "trinormal") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
-                        trinormals.push_back(makeTriNormal(values));
+                        trinormals.push_back(Objects::makeTriNormal(values));
                     }
                 }
                 

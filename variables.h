@@ -1,3 +1,12 @@
+#include "vertexnormal.h"
+#include "sphere.h"
+#include "tri.h"
+#include "trinormal.h"
+
+#include <glm/glm.hpp>
+
+#include <vector>
+
 // width and height specify image size
 extern width;
 extern height;
@@ -19,7 +28,6 @@ extern upx;
 extern upy;
 extern upz;
 extern fov;
-
 
 //***************************//
 //  Geometry Specifications  //
@@ -46,7 +54,6 @@ extern vector<tri> triangles;
 
 // pile of inputted triangles using vertices with specified normals 
 extern vector<trinormal> trinormals;
-
 
 //**************************//
 //  Materials Specifiations //
