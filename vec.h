@@ -1,3 +1,4 @@
+// Is this still being used?
 
 #ifndef _vec_h
 #define _vec_h

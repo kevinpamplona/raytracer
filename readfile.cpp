@@ -64,7 +64,7 @@ void readFile(const char * filename) {
                     if (validinput) {
                         width = values[0];
                         height = values[1];
-                        cout << "IMAGE: " << width << "," << height;
+                        //cout << "IMAGE: " << width << "," << height;
                     }
                 }
                 else if (cmd == "maxdepth") {
@@ -118,6 +118,7 @@ void readFile(const char * filename) {
                 else if (cmd == "sphere") {
                     validinput = readVals(s, 4, values);
                     if (validinput) {
+                        objcount += 1;
                         spherecount += 1;
                         spheres.push_back(makeSphere(values));
                     }
@@ -125,6 +126,7 @@ void readFile(const char * filename) {
                 else if (cmd == "tri") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
+                        objcount += 1;
                         tricount += 1;
                         triangles.push_back(makeTriangle(values));
                     }
@@ -132,6 +134,7 @@ void readFile(const char * filename) {
                 else if (cmd == "trinormal") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
+                        objcount += 1;
                         trinormcount += 1;
                         trinormals.push_back(makeTriNormal(values));
                     }

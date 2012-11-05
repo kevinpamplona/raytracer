@@ -3,6 +3,7 @@
 #include "tri.h"
 #include "trinormal.h"
 #include "vec.h"
+#include "ray.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -38,6 +39,13 @@ extern float upy;
 extern float upz;
 extern float fov;
 
+extern glm::vec3 eye;
+extern glm::vec3 center;
+extern glm::vec3 up;
+extern glm::vec3 w;
+extern glm::vec3 u;
+extern glm::vec3 v;
+
 //***************************//
 //  Geometry Specifications  //
 //***************************//
@@ -69,6 +77,8 @@ extern int vertexnormcount;
 extern int spherecount;
 extern int tricount;
 extern int trinormcount;
+extern int raycount;
+extern int objcount;
 
 //**************************//
 //  Materials Specifiations //

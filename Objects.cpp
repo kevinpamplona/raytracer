@@ -1,5 +1,5 @@
 #include "Objects.h"
-
+#include "variables.h"
 
 // helper function to create a vertex
 glm::vec3 makeVertex(float * values) {
@@ -17,14 +17,19 @@ glm::vec3 makeVertex(float * values) {
 vertexNormal makeVertNormal(float * values) {
     vertexNormal vn;
     
-    vn.x = values[0];
-    vn.y = values[1];
-    vn.z = values[2];
+    glm::vec3 temp_vec;
+    glm::vec3 temp_n;
     
-    vn.nx = values[3];
-    vn.ny = values[4];
-    vn.nz = values[5];
+    temp_vec.x = values[0];
+    temp_vec.y = values[1];
+    temp_vec.z = values[2];
     
+    temp_n.x = values[3];
+    temp_n.x = values[4];
+    temp_n.x = values[5];
+    
+    vn.v = temp_vec;
+    vn.n = temp_n;
     return vn;
 }
 
@@ -35,7 +40,7 @@ sphere makeSphere(float * values) {
     s.x = values[0];
     s.y = values[1];
     s.z = values[2];
-    
+
     s.radius = values[3];
     
     return s;
@@ -45,10 +50,13 @@ sphere makeSphere(float * values) {
 tri makeTriangle(float * values) {
     tri t;
     
-    t.v1 = values[0];
-    t.v2 = values[1];
-    t.v3 = values[2];
+    int v1 = values[0];
+    int v2 = values[1];
+    int v3 = values[2];
     
+    t.v1 = vertices[v1];
+    t.v2 = vertices[v2];
+    t.v3 = vertices[v3];
     return t;
 }
 
@@ -56,9 +64,25 @@ tri makeTriangle(float * values) {
 triNormal makeTriNormal(float * values) {
     triNormal tn;
     
-    tn.v1 = values[0];
-    tn.v2 = values[1];
-    tn.v3 = values[2];
+    int v1 = values[0];
+    int v2 = values[1];
+    int v3 = values[2];
+    
+    vertexNormal a;
+    vertexNormal b;
+    vertexNormal c;
+    
+    a = vertnormals[v1];
+    b = vertnormals[v2];
+    c = vertnormals[v3];
+    
+    tn.v1 = a.v;
+    tn.v2 = b.v;
+    tn.v3 = c.v;
+    
+    tn.vn1 = a.n;
+    tn.vn2 = b.n;
+    tn.vn3 = c.n;
     
     return tn;
 }

@@ -1,16 +1,13 @@
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #ifndef _vertexNormal_h
 #define _vertexNormal_h
 
 struct vertexNormal
 {
-    float x;
-    float y;
-    float z;
-    
-    float nx;
-    float ny;
-    float nz;
+    glm::vec3 v;
+    glm::vec3 n;
 };
 
 #endif

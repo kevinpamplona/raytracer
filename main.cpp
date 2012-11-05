@@ -9,6 +9,7 @@
 #include "readfile.h"
 #include "variables.h"
 #include "Film.h"
+#include "Camera.h"
 
 using namespace std;
 
@@ -65,6 +66,9 @@ int vertexnormcount = 0;
 int spherecount = 0;
 int tricount = 0;
 int trinormcount = 0;
+int raycount = 0;
+int objcount = 0;
+
 
 //**************************//
 //  Materials Specifiations //
@@ -75,7 +79,39 @@ float specular[3];
 float shininess;
 float emission[3];
 
+//***************************//
+//   Camera Specifications  //
+//***************************//
+glm::vec3 eye;
+glm::vec3 center;
+glm::vec3 up;
+glm::vec3 w;
+glm::vec3 u;
+glm::vec3 v;
+
+//
 int BPP = 24;
+
+void initCamera() {
+    eye.x = lookfromx;
+    eye.y = lookfromy;
+    eye.z = lookfromz;
+    
+    center.x = lookatx;
+    center.y = lookaty;
+    center.z = lookatz;
+    
+    up.x = upx;
+    up.y = upy;
+    up.z = upz;
+    
+    glm::vec3 a = eye-center;
+    glm::vec3 b = up;
+    
+    w = glm::normalize(a);
+    u = glm::normalize(glm::cross(b,w));
+    v = glm::cross(w,u);
+}
 
 // Test function to make sure FreeImage has been imported correctly
 void testPrint() {
@@ -123,7 +159,8 @@ void init() {
     
     cout << "An amount of " << spherecount << " spheres have been specified. \n";
     cout << "An amount of " << tricount << " triangles have been specified. \n";
-    cout << "An amount of " << trinormcount << " triangles with calculated vertex normals have been specified. \n\n";
+    cout << "An amount of " << trinormcount << " triangles with calculated vertex normals have been specified. \n";
+    cout << "A total of " << objcount << " objects have been specified. \n\n";
 }
 
 
@@ -131,6 +168,7 @@ int main (int argc, char * argv[]) {
     FreeImage_Initialise();
     readFile(argv[1]);
     init();
+    initCamera();
     
     cout << "Creating bitmap...\n\n";
     int bitmap[width][height][3];
@@ -141,6 +179,7 @@ int main (int argc, char * argv[]) {
             bitmap[i][j][0] = 0;
             bitmap[i][j][1] = 0;
             bitmap[i][j][2] = 0;
+            ray r = Camera::shootRay(i,j);
         }
     }
     
@@ -175,5 +214,6 @@ int main (int argc, char * argv[]) {
     cout << "FreeImage " << FreeImage_GetVersion() << "\n";
     cout << FreeImage_GetCopyrightMessage() << ".\n\n";
     FreeImage_DeInitialise();
+    cout << "Raytacer has shot: " << raycount << " rays. \n\n";
     return 0;
 }
