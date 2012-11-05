@@ -64,6 +64,7 @@ void readFile(const char * filename) {
                     if (validinput) {
                         width = values[0];
                         height = values[1];
+                        cout << "IMAGE: " << width << "," << height;
                     }
                 }
                 else if (cmd == "maxdepth") {

@@ -16,4 +16,4 @@ Objects.o: Objects.cpp Objects.h
 Film.o: Film.cpp Film.h
 	g++ $(INCFLAGS) -c Film.cpp
 clean: 
-	rm -f *.o raytracer
+	rm -f *.o raytracer *.png

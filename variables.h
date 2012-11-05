@@ -17,8 +17,8 @@ using namespace std;
 #define VARIABLES_H
 
 // width and height specify image size
-extern float width;
-extern float height;
+extern int width;
+extern int height;
 
 // maximum depth for a ray (level of recursion)
 extern int depth;

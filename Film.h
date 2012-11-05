@@ -6,6 +6,6 @@ public:
     Film();
     virtual ~Film();
     
-    static void write(glm::vec3 color, glm::vec2 position);
+    static void write(int change, int i, int j);
     static void output();
 };

@@ -8,12 +8,13 @@
 #include "Objects.h"
 #include "readfile.h"
 #include "variables.h"
+#include "Film.h"
 
 using namespace std;
 
 // width and height specify image size
-float width = 0;
-float height = 0;
+int width = 0;
+int height = 0;
 
 // maximum depth for a ray (level of recursion)
 int depth = 5;
@@ -74,11 +75,12 @@ float specular[3];
 float shininess;
 float emission[3];
 
+int BPP = 24;
+
+// Test function to make sure FreeImage has been imported correctly
 void testPrint() {
-    
     int width = 800;
     int height = 600;
-    int BPP = 24;
     
     FIBITMAP* bitmap = FreeImage_Allocate(width,height,BPP);
     RGBQUAD color;
@@ -130,9 +132,48 @@ int main (int argc, char * argv[]) {
     readFile(argv[1]);
     init();
     
+    cout << "Creating bitmap...\n\n";
+    int bitmap[width][height][3];
+    
+    cout << "Calculating all pixel values...\n\n";
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            bitmap[i][j][0] = 0;
+            bitmap[i][j][1] = 0;
+            bitmap[i][j][2] = 0;
+        }
+    }
+    
+    
+    FIBITMAP* IMG = FreeImage_Allocate(width,height,BPP);
+    RGBQUAD color;
+    if (!bitmap) {
+        cout << " Unable to allocate images...\n\n";
+        exit(1);
+    }
+    
+    for (int i=0; i<width; i++) {
+        for (int j=0; j<height; j++) {
+            float r = bitmap[i][j][0];
+            float g = bitmap[i][j][1];
+            float b = bitmap[i][j][2];
+            
+            color.rgbRed = r * 255.0;
+            color.rgbGreen = g * 255.0;
+            color.rgbBlue = b * 255.0;
+            
+            FreeImage_SetPixelColor(IMG, i,j,&color);
+        }
+    }
+    
+    if (FreeImage_Save(FIF_PNG, IMG, "test.png", 0)) {
+        cout << "Image successfully saved!\n\n\n";
+    } else {
+        cout << "Image not saved..";
+    }
+    
     cout << "FreeImage " << FreeImage_GetVersion() << "\n";
-    cout << FreeImage_GetCopyrightMessage() << "\n\n";
-    testPrint();
+    cout << FreeImage_GetCopyrightMessage() << ".\n\n";
     FreeImage_DeInitialise();
     return 0;
 }
