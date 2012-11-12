@@ -1,16 +1,15 @@
-#include "vertexnormal.h"
-#include "sphere.h"
-#include "tri.h"
-#include "trinormal.h"
-#include "vec.h"
-#include "ray.h"
-
+#include <FreeImage.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
-
-#include <string>
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include <vector>
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include "structs.h"
 
 using namespace std;
 
@@ -37,7 +36,8 @@ extern float lookatz;
 extern float upx;
 extern float upy;
 extern float upz;
-extern float fov;
+extern float fovy;
+extern float fovx;
 
 extern glm::vec3 eye;
 extern glm::vec3 center;
@@ -79,6 +79,7 @@ extern int tricount;
 extern int trinormcount;
 extern int raycount;
 extern int objcount;
+extern int hitcount;
 
 //**************************//
 //  Materials Specifiations //

@@ -1,14 +1,11 @@
+#include "variables.h"
 
-#ifndef _sphere_h
-#define _sphere_h
-
-struct sphere
+class Sphere
 {
-    float x;
-    float y;
-    float z;
+public:
+    Sphere();
+    virtual ~Sphere();
     
-    float radius;
+    static bool intersect (sphere s, ray r);
+    
 };
-
-#endif

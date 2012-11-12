@@ -2,7 +2,7 @@
 #include "variables.h"
 
 // helper function to create a vertex
-glm::vec3 makeVertex(float * values) {
+glm::vec3 Objects::makeVertex(float * values) {
     glm::vec3 v;
     
     v.x = values[0];
@@ -14,7 +14,7 @@ glm::vec3 makeVertex(float * values) {
  
 
 // helper function to create a vertex with specified normals
-vertexNormal makeVertNormal(float * values) {
+vertexNormal Objects::makeVertNormal(float * values) {
     vertexNormal vn;
     
     glm::vec3 temp_vec;
@@ -34,12 +34,13 @@ vertexNormal makeVertNormal(float * values) {
 }
 
 // helper function to create a sphere
-sphere makeSphere(float * values) {
+sphere Objects::makeSphere(float * values) {
     sphere s;
+    glm::vec3 center;
     
-    s.x = values[0];
-    s.y = values[1];
-    s.z = values[2];
+    center.x = values[0];
+    center.y = values[1];
+    center.z = values[2];
 
     s.radius = values[3];
     
@@ -47,7 +48,7 @@ sphere makeSphere(float * values) {
 }
 
 // helper function to create a triangle
-tri makeTriangle(float * values) {
+tri Objects::makeTriangle(float * values) {
     tri t;
     
     int v1 = values[0];
@@ -57,11 +58,14 @@ tri makeTriangle(float * values) {
     t.v1 = vertices[v1];
     t.v2 = vertices[v2];
     t.v3 = vertices[v3];
+    
+    t.normal = glm::normalize(glm::cross(t.v2-t.v1, t.v3-t.v1));
+    
     return t;
 }
 
 // helper function to create triangle with vertices that have specified normals
-triNormal makeTriNormal(float * values) {
+triNormal Objects::makeTriNormal(float * values) {
     triNormal tn;
     
     int v1 = values[0];
@@ -86,3 +90,11 @@ triNormal makeTriNormal(float * values) {
     
     return tn;
 }
+
+glm::vec3 Objects::scale(glm::vec3 v, float s) {
+    v.x = v.x*s;
+    v.y = v.y*s;
+    v.z = v.z*s;
+    return v;
+}
+

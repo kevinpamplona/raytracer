@@ -1,17 +1,12 @@
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <sstream>
-
-#include <FreeImage.h>
-
-#include "Objects.h"
-#include "readfile.h"
 #include "variables.h"
-#include "Film.h"
+#include "ReadScene.h"
 #include "Camera.h"
-
-using namespace std;
+#include "Objects.h"
+#include "Triangle.h"
+#include "Sphere.h"
+#include "Intersect.h"
+#include "Film.h"
+#include "structs.h"
 
 // width and height specify image size
 int width = 0;
@@ -33,7 +28,8 @@ float lookatz = 0;
 float upx = 0;
 float upy = 0;
 float upz = 0;
-float fov = 0;
+float fovx = 0;
+float fovy = 0;
 
 //***************************//
 //  Geometry Specifications  //
@@ -68,7 +64,7 @@ int tricount = 0;
 int trinormcount = 0;
 int raycount = 0;
 int objcount = 0;
-
+int hitcount = 0;
 
 //**************************//
 //  Materials Specifiations //
@@ -92,6 +88,11 @@ glm::vec3 v;
 //
 int BPP = 24;
 
+void printVector(glm::vec3 v) {
+    cout << "(" << v.x << ", " << v.y << ", " << v.z << ") \n";
+}
+
+
 void initCamera() {
     eye.x = lookfromx;
     eye.y = lookfromy;
@@ -108,16 +109,25 @@ void initCamera() {
     glm::vec3 a = eye-center;
     glm::vec3 b = up;
     
+    cout << "\t a vector: "; printVector(a);
+    cout << "\t b vector: "; printVector(b);
+    
     w = glm::normalize(a);
     u = glm::normalize(glm::cross(b,w));
     v = glm::cross(w,u);
+    
+    cout << "The constructed coordinate frame: \n";
+
+    cout << "\t W vector: "; printVector(w);
+    cout << "\t U vector: "; printVector(u);
+    cout << "\t V vector: "; printVector(v);
+    
 }
 
+ 
 // Test function to make sure FreeImage has been imported correctly
 void testPrint() {
-    int width = 800;
-    int height = 600;
-    
+
     FIBITMAP* bitmap = FreeImage_Allocate(width,height,BPP);
     RGBQUAD color;
     
@@ -131,18 +141,19 @@ void testPrint() {
             color.rgbGreen = (double)i / width * 255.0;
             color.rgbBlue = (double)j / height * 255.0;
             
-            FreeImage_SetPixelColor(bitmap, i,j,&color);
+            FreeImage_SetPixelColor(bitmap,i,j,&color);
         }
     }
     
     if (FreeImage_Save(FIF_PNG, bitmap, "test.png", 0)) {
         cout << "Image successfully saved!\n";
     } else {
-        cout << "Image not saved..";
+        cout << "Image not saved..";    
     }
 }
 
 void init() {
+    cout << "\n\n************************************\n";
     cout << "Reading in scene file... \n";
     cout << "Image size has been set to a " << width << " x " << height << " output. \n";
     cout << "The maximum recursion depth has been set to " << depth << ". \n";
@@ -152,7 +163,8 @@ void init() {
     cout << "\t POSITION: (" << lookfromx << ", " << lookfromy << ", " << lookfromz << ") \n";
     cout << "\t DIRECTION: (" << lookatx << ", " << lookaty << ", " << lookatz << ") \n";
     cout << "\t UP: (" << upx << ", " << upy << ", " << upz << ") \n";
-    cout << "\t FIELD OF VIEW: " << fov << " \n";
+    cout << "\t FIELD OF VIEW (X): " << fovx << " \n\n";
+    cout << "\t FIELD OF VIEW (Y): " << fovy << " \n\n";
     
     cout << "An amount of " << vertexcount << " vertices has been specified with a maximum of " << maxverts << " allowed. \n";
     cout << "An amount of " << vertexnormcount << " vertices with normals has been specified with a maximum of " << maxvertnorms << " allowed. \n"; 
@@ -163,26 +175,101 @@ void init() {
     cout << "A total of " << objcount << " objects have been specified. \n\n";
 }
 
+int testRayDir() {
+    
+    int i = 0;
+    int j = 0;
+    
+    cout << "The camera has been instantiated with the following properties: \n";
+    cout << "\t POSITION: (" << lookfromx << ", " << lookfromy << ", " << lookfromz << ") \n";
+    cout << "\t DIRECTION: (" << lookatx << ", " << lookaty << ", " << lookatz << ") \n";
+    cout << "\t UP: (" << upx << ", " << upy << ", " << upz << ") \n";
+    cout << "\t FIELD OF VIEW (Y): " << fovy << " \n\n\n\n\n";
+    
+    cout << "Calculating coordinate frame... \n";
+    glm::vec3 a = eye-center;
+    glm::vec3 b = up;
+    
+    cout << "\t a vector: "; printVector(a);
+    cout << "\t b vector: "; printVector(b);
+    
+    w = glm::normalize(a);
+    u = glm::normalize(glm::cross(b,w));
+    v = glm::cross(w,u);
+    
+    cout << "The constructed coordinate frame: \n";
+    
+    cout << "\t W vector: "; printVector(w);
+    cout << "\t U vector: "; printVector(u);
+    cout << "\t V vector: "; printVector(v);
+    
+    cout << "Testing ray at: " << i << " " << j << "\n";
+    ray r = Camera::shootRay(i,j);
+
+    cout << "\t RAY ORIGIN: "; printVector(r.ori);
+    cout << "\t RAY DIR: "; printVector(r.dir);
+}
+
 
 int main (int argc, char * argv[]) {
     FreeImage_Initialise();
-    readFile(argv[1]);
+    ReadScene::readFile(argv[1]);
     init();
     initCamera();
     
-    cout << "Creating bitmap...\n\n";
+    
+    // Sample sphere
+    sphere s;
+    glm::vec3 cen;
+    cen.x = 0;
+    cen.y = 0; // toggle between 1/0
+    cen.z = -50;
+    s.center = cen;
+    s.radius = 5;
+    
+    /*
+    tri t1 = triangles[0];
+    
+    tri t2 = triangles[1];
+    */
+    
+    cout << "Creating bitmap...\n";
     int bitmap[width][height][3];
     
-    cout << "Calculating all pixel values...\n\n";
-    for (int i = 0; i < width; i++) {
-        for (int j = 0; j < height; j++) {
-            bitmap[i][j][0] = 0;
-            bitmap[i][j][1] = 0;
-            bitmap[i][j][2] = 0;
-            ray r = Camera::shootRay(i,j);
-        }
+    cout << "Calculating all pixel values...\n";
+    
+    // Initialize bitmap to be all white
+    for (int i = 0; i < height; i++) {
+       for (int j = 0; j < width; j++) {
+           bitmap[i][j][0] = 0;
+           bitmap[i][j][1] = 0;
+           bitmap[i][j][2] = 0;
+       }
     }
     
+    
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+
+            ray r = Camera::shootRay(i,j);
+            bool hit = Intersect::hit(r);
+            
+            if (hit) {
+                hitcount += 1;
+                bitmap[i][j][0] = 0;
+                bitmap[i][j][1] = 0;
+                bitmap[i][j][2] = 1;
+            } else {
+                bitmap[i][j][0] = 0;
+                bitmap[i][j][1] = 0;
+                bitmap[i][j][2] = 0;
+            }
+       }
+    }
+    
+    cout << "Raytacer has shot: " << raycount << " rays. \n\n";
+    cout << "Hitcount: " << hitcount << " \n\n";
+
     
     FIBITMAP* IMG = FreeImage_Allocate(width,height,BPP);
     RGBQUAD color;
@@ -201,7 +288,9 @@ int main (int argc, char * argv[]) {
             color.rgbGreen = g * 255.0;
             color.rgbBlue = b * 255.0;
             
-            FreeImage_SetPixelColor(IMG, i,j,&color);
+            //j = height - j;
+            
+            FreeImage_SetPixelColor(IMG,j,height-i,&color); // i switched the original i,j order
         }
     }
     
@@ -211,9 +300,10 @@ int main (int argc, char * argv[]) {
         cout << "Image not saved..";
     }
     
+    //testRayDir();
+    
     cout << "FreeImage " << FreeImage_GetVersion() << "\n";
     cout << FreeImage_GetCopyrightMessage() << ".\n\n";
     FreeImage_DeInitialise();
-    cout << "Raytacer has shot: " << raycount << " rays. \n\n";
     return 0;
 }
