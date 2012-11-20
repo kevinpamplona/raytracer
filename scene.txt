@@ -1,7 +1,9 @@
 # Test Scene 1 
 # A simple quad viewed from different camera positions
 
-size 640 480 
+ size 640 480  
+# 300 300
+# size 150 100
 
 # Now specify the camera.  This is what you should implement.
 # This file has 4 camera positions.  Render your scene for all 4.
@@ -22,7 +24,7 @@ diffuse 1 0 0
 specular 0 0 0
 
 # Now specify the geometry 
-# Again, for initial testing, maybe you want to implement a dummy 
+# Again, for initial t#esting, maybe you want to implement a dummy 
 # ray-plane intersection routine, instead of reading this fully.
 # Though it's probably simpler you just implement this, for later 
 # parts of the assignment.

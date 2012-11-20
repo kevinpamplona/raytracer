@@ -92,7 +92,6 @@ void printVector(glm::vec3 v) {
     cout << "(" << v.x << ", " << v.y << ", " << v.z << ") \n";
 }
 
-
 void initCamera() {
     eye.x = lookfromx;
     eye.y = lookfromy;
@@ -107,6 +106,7 @@ void initCamera() {
     up.z = upz;
     
     glm::vec3 a = eye-center;
+    //glm::vec3 a = center-eye;
     glm::vec3 b = up;
     
     cout << "\t a vector: "; printVector(a);
@@ -216,33 +216,18 @@ int main (int argc, char * argv[]) {
     ReadScene::readFile(argv[1]);
     init();
     initCamera();
-    
-    
-    // Sample sphere
-    sphere s;
-    glm::vec3 cen;
-    cen.x = 0;
-    cen.y = 0; // toggle between 1/0
-    cen.z = -50;
-    s.center = cen;
-    s.radius = 5;
-    
-    /*
-    tri t1 = triangles[0];
-    
-    tri t2 = triangles[1];
-    */
+
     
     cout << "Creating bitmap...\n";
     int bitmap[width][height][3];
     
     cout << "Calculating all pixel values...\n";
     
-    // Initialize bitmap to be all white
-    for (int i = 0; i < height; i++) {
-       for (int j = 0; j < width; j++) {
+    // Initialize bitmap to be color
+    for (int i = 0; i < width; i++) {
+       for (int j = 0; j < height; j++) {
            bitmap[i][j][0] = 0;
-           bitmap[i][j][1] = 0;
+           bitmap[i][j][1] = 1;
            bitmap[i][j][2] = 0;
        }
     }
@@ -251,18 +236,22 @@ int main (int argc, char * argv[]) {
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
 
+            //ray r = Camera::shootRay(j,i);
             ray r = Camera::shootRay(i,j);
             bool hit = Intersect::hit(r);
             
             if (hit) {
                 hitcount += 1;
-                bitmap[i][j][0] = 0;
+                bitmap[i][j][0] = 1;
                 bitmap[i][j][1] = 0;
                 bitmap[i][j][2] = 1;
+                
+                cout << "\t TRUE\n\n";
             } else {
                 bitmap[i][j][0] = 0;
                 bitmap[i][j][1] = 0;
                 bitmap[i][j][2] = 0;
+                cout << "\t FALSE\n\n";
             }
        }
     }
@@ -278,6 +267,24 @@ int main (int argc, char * argv[]) {
         exit(1);
     }
     
+    
+    for (int i=0; i<width; i++) {
+        for (int j=0; j<height; j++) {
+            float r = bitmap[i][j][0];
+            float g = bitmap[i][j][1];
+            float b = bitmap[i][j][2];
+            
+            color.rgbRed = r * 255.0;
+            color.rgbGreen = g * 255.0;
+            color.rgbBlue = b * 255.0;
+                        
+            FreeImage_SetPixelColor(IMG,i,height-j,&color);
+            //FreeImage_SetPixelColor(IMG,j,height-i,&color);
+        }
+    }
+    
+    
+    /*
     for (int i=0; i<width; i++) {
         for (int j=0; j<height; j++) {
             float r = bitmap[i][j][0];
@@ -290,9 +297,13 @@ int main (int argc, char * argv[]) {
             
             //j = height - j;
             
-            FreeImage_SetPixelColor(IMG,j,height-i,&color); // i switched the original i,j order
+            //FreeImage_SetPixelColor(IMG,j,height-i,&color); // i switched the original i,j order
+            //FreeImage_SetPixelColor(IMG,i,j,&color);
+            FreeImage_SetPixelColor(IMG,i,j,&color);
+            //FreeImage_SetPixelColor(IMG,height-i,j,&color);
         }
     }
+    */
     
     if (FreeImage_Save(FIF_PNG, IMG, "test.png", 0)) {
         cout << "Image successfully saved!\n\n\n";
@@ -300,8 +311,9 @@ int main (int argc, char * argv[]) {
         cout << "Image not saved..";
     }
     
-    //testRayDir();
     
+    //testRayDir();
+
     cout << "FreeImage " << FreeImage_GetVersion() << "\n";
     cout << FreeImage_GetCopyrightMessage() << ".\n\n";
     FreeImage_DeInitialise();

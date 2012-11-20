@@ -12,85 +12,46 @@ void Camera::initCamera(float * values) {
     upx = values[6];
     upy = values[7];
     upz = values[8];
-    fovy = values[9];
-    //fovx = fovy*((float)height/width);
-    //fovx = 2*atan(tan((float)fovy/2)*((float)height/width));
-    fovx = 0;
+    fovy = glm::radians(values[9]);
+    fovx = 2*atan(tan((float)fovy/2)*((float)width/height)); // added radians
 }
+
 
 ray Camera::shootRay(int i, int j) {
     
-    // Increments counter for how many ray's shot
+    
     raycount += 1;
     
     ray r;
-    glm::vec3 dir;
-    float alpha, beta;
-    //float fovx = fovy;
-    //float fovx = (height/width)*fov; // not sure about this
-    //float fovy = fov;
+    glm::vec3 r_dir;
     
-    /*
-    cout << "FOVX: " << fovx << " ";
-    cout << "FOVY: " << fovy << " \n";
-    */
+    // correct
+    // (width/(float)height)*
+    //float alpha = tan((float)fovx/2) * ((j - ((float)width/2))/((float)width/2));
+    //float beta = tan((float)fovy/2) * ((((float)height/2)-i)/((float)height/2));
     
-    // Do we need to convert this?
-    float m = (fovx/2)/**(M_PI/180)*/;
-    float n = (fovy/2)/**(M_PI/180)*/;
-    float tanx = tan(m);
-    float tany = tan(n);
+    //chloh
+    float alpha = tan((float)fovx/2) * ((i - ((float)width/2))/((float)width/2));
+    float beta = tan((float)fovy/2) * ((((float)height/2)-j)/((float)height/2));
     
-    /*
-    cout << "TANX: " << tanx << " ";
-    cout << "TANY: " << tany << " \n";
+    //float alpha = ((float)width/height) * tan(fovx/2.0) * ( (j - (width/2.0)) / (width/2.0));
+    //float beta = tan(fovy/2.0) * ( (height/2.0) - i) / (height/2.0);
     
-    cout << "I: " << i << "\n";
-    cout << "J: " << j << "\n";
-    cout << "jnum: " << j-(width/2) << "\n";
-    cout << "jdem: " << (width/2) << "\n";
-    cout << "jfinal: " << (j-(width/2))/(width/2) << "\n";
-    */
-    
-    float testn = j-(width/2);
-    float testd = (width/2);
-    float testf = ((j-(width/2))/(width/2));
-    
-    /*
-    cout << "testn: " << j-(width/2) << "\n";
-    cout << "testd: " << (width/2) << "\n";
-    cout << "testf: " << testn/testd << "\n";
-    */
+    //aldi
+    //float alpha = float(width) * tan(fovy/2)/ float(height) * (j - (width / 2.0)) / (width / 2.0);
+    //float beta = tan(fovy/2) * ((height / 2.0) - i) / (height / 2.0);
+        
+    r_dir = glm::normalize(alpha*u + beta*v - w);
      
-    float jnum = j-(width/2);
-    float jdem = width/2;
-    
-    float inum = (height/2)-i;
-    float idem = height/2;
-    
-    
-    float jval = jnum/jdem;
-    float ival = inum/idem;
-    
-    /*
-    cout << "JVAL: " << jval << " ";
-    cout << "IVAL: " << ival << " \n";
-    */
-    
-    alpha = tanx*jval;
-    beta = tany*ival;
-    
-    /*
-    cout << "ALPHA: " << alpha << " ";
-    cout << "BETA: " << beta << " \n";
-    */
-    
-    glm::vec3 nonorm = alpha*u + beta*v - w;
-    //cout << "Before normalization: (" << nonorm.x << ", " << nonorm.y << ", " << nonorm.z << ") \n";
-    
-    dir = glm::normalize(alpha*u+beta*v-w);
-    r.dir = dir;
     r.ori = eye;
+    r.dir = r_dir;
+    
+    cout << "\n RAY: (" << i << "," << j << ") \n";
+    cout << "\t WIDTH/2: " << ((float)width/2) << " \n";
+    cout << "\t HEIGHT/2: " << ((float)height/2) << " \n";
+    cout << "\t alpha: " << alpha << "   beta: " << beta << " \n";
+    cout << "\t RAY ORI: (" << eye.x << ", " << eye.y << ", " << eye.z << ") \n";
+    cout << "\t RAY DIR: (" << r_dir.x << ", " << r_dir.y << ", " << r_dir.z << ") \n";
+    
     return r;
 }
-
