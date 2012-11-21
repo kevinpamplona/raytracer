@@ -34,7 +34,6 @@ void ReadScene::readFile(const char * filename) {
                 
                 stringstream s (str);
                 s >> cmd;
-                                 
                 
                 // GENERAL commands
                 if (cmd == "size") {
@@ -165,7 +164,6 @@ void ReadScene::readFile(const char * filename) {
                 }
             }
             getline(in, str);
-            //cout << "Reading current line: [" << str << "] \n";
         }
     }
     else {

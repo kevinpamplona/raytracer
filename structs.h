@@ -57,3 +57,27 @@ struct ray
 };
 #endif
 
+#ifndef _Hit_h
+#define _Hit_h
+struct Hit
+{
+    bool hit;
+    int prim;
+    int shape;
+};
+#endif
+
+#ifndef _hitShape_h
+#define _hitShape_h
+struct hitShape
+{
+    bool hit;
+    float depth;
+    int index;
+};
+#endif
+
+
+
+
+

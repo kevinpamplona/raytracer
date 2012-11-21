@@ -43,6 +43,7 @@ sphere Objects::makeSphere(float * values) {
     center.z = values[2];
 
     s.radius = values[3];
+    s.center = center;
     
     return s;
 }

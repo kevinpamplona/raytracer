@@ -66,6 +66,12 @@ int raycount = 0;
 int objcount = 0;
 int hitcount = 0;
 
+//debug
+int spherehitcount = 0;
+int trihitcount = 0;
+int misscount = 0;
+int tiecount = 0;
+
 //**************************//
 //  Materials Specifiations //
 //**************************//
@@ -106,7 +112,6 @@ void initCamera() {
     up.z = upz;
     
     glm::vec3 a = eye-center;
-    //glm::vec3 a = center-eye;
     glm::vec3 b = up;
     
     cout << "\t a vector: "; printVector(a);
@@ -216,48 +221,54 @@ int main (int argc, char * argv[]) {
     ReadScene::readFile(argv[1]);
     init();
     initCamera();
-
     
     cout << "Creating bitmap...\n";
     int bitmap[width][height][3];
     
     cout << "Calculating all pixel values...\n";
     
-    // Initialize bitmap to be color
-    for (int i = 0; i < width; i++) {
-       for (int j = 0; j < height; j++) {
-           bitmap[i][j][0] = 0;
-           bitmap[i][j][1] = 1;
-           bitmap[i][j][2] = 0;
-       }
-    }
-    
+    int pw = width/2;
+    int ph = height/2-12;
+    bool debug = false;
     
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
-
-            //ray r = Camera::shootRay(j,i);
+            if (i == pw && j == ph) {
+                debug = true;
+            }
             ray r = Camera::shootRay(i,j);
-            bool hit = Intersect::hit(r);
-            
-            if (hit) {
+            Hit hit = Intersect::hit(r, debug);
+            debug = false;
+            if (hit.hit) {
                 hitcount += 1;
-                bitmap[i][j][0] = 1;
-                bitmap[i][j][1] = 0;
-                bitmap[i][j][2] = 1;
                 
-                cout << "\t TRUE\n\n";
+                if (hit.prim == 0) {
+                    bitmap[i][j][0] = 1;
+                    bitmap[i][j][1] = 1;
+                    bitmap[i][j][2] = 0;
+                } else if (hit.prim == 1) {
+                    bitmap[i][j][0] = 1;
+                    bitmap[i][j][1] = 0;
+                    bitmap[i][j][2] = 0;
+                }
             } else {
                 bitmap[i][j][0] = 0;
                 bitmap[i][j][1] = 0;
                 bitmap[i][j][2] = 0;
-                cout << "\t FALSE\n\n";
             }
        }
     }
     
+    bitmap[pw][ph][0] = 0;
+    bitmap[pw][ph][1] = 0;
+    bitmap[pw][ph][2] = 1;
+    
     cout << "Raytacer has shot: " << raycount << " rays. \n\n";
-    cout << "Hitcount: " << hitcount << " \n\n";
+    cout << "Hitcount: " << hitcount << " \n";
+    cout << "Spheres hit: " << spherehitcount << " \n";
+    cout << "Triangles hit: " << trihitcount << " \n";
+    cout << "Missed ray: " << misscount << " \n\n";
+    cout << "Ties: " << tiecount << " \n\n";
 
     
     FIBITMAP* IMG = FreeImage_Allocate(width,height,BPP);
@@ -279,31 +290,8 @@ int main (int argc, char * argv[]) {
             color.rgbBlue = b * 255.0;
                         
             FreeImage_SetPixelColor(IMG,i,height-j,&color);
-            //FreeImage_SetPixelColor(IMG,j,height-i,&color);
         }
     }
-    
-    
-    /*
-    for (int i=0; i<width; i++) {
-        for (int j=0; j<height; j++) {
-            float r = bitmap[i][j][0];
-            float g = bitmap[i][j][1];
-            float b = bitmap[i][j][2];
-            
-            color.rgbRed = r * 255.0;
-            color.rgbGreen = g * 255.0;
-            color.rgbBlue = b * 255.0;
-            
-            //j = height - j;
-            
-            //FreeImage_SetPixelColor(IMG,j,height-i,&color); // i switched the original i,j order
-            //FreeImage_SetPixelColor(IMG,i,j,&color);
-            FreeImage_SetPixelColor(IMG,i,j,&color);
-            //FreeImage_SetPixelColor(IMG,height-i,j,&color);
-        }
-    }
-    */
     
     if (FreeImage_Save(FIF_PNG, IMG, "test.png", 0)) {
         cout << "Image successfully saved!\n\n\n";
@@ -311,9 +299,6 @@ int main (int argc, char * argv[]) {
         cout << "Image not saved..";
     }
     
-    
-    //testRayDir();
-
     cout << "FreeImage " << FreeImage_GetVersion() << "\n";
     cout << FreeImage_GetCopyrightMessage() << ".\n\n";
     FreeImage_DeInitialise();

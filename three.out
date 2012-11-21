@@ -1,0 +1,48 @@
+
+
+************************************
+Reading in scene file... 
+Image size has been set to a 640 x 480 output. 
+The maximum recursion depth has been set to 5. 
+The image will be output to output.png. 
+The camera has been instantiated with the following properties: 
+	 POSITION: (2, 2, 2) 
+	 DIRECTION: (0, 0, 1) 
+	 UP: (-1, -1, 2) 
+	 FIELD OF VIEW (X): 1.31211 
+
+	 FIELD OF VIEW (Y): 1.0472 
+
+An amount of 8 vertices has been specified with a maximum of 8 allowed. 
+An amount of 0 vertices with normals has been specified with a maximum of 0 allowed. 
+An amount of 21 spheres have been specified. 
+An amount of 12 triangles have been specified. 
+An amount of 0 triangles with calculated vertex normals have been specified. 
+A total of 33 objects have been specified. 
+
+	 a vector: (2, 2, 1) 
+	 b vector: (-1, -1, 2) 
+The constructed coordinate frame: 
+	 W vector: (0.666667, 0.666667, 0.333333) 
+	 U vector: (-0.707107, 0.707107, 0) 
+	 V vector: (-0.235702, -0.235702, 0.942809) 
+Creating bitmap...
+Calculating all pixel values...
+primFlag: 1 
+Distance of nearest sphere: 3.59676 
+Distance of nearest triangle: 3.26809 
+Raytacer has shot: 307200 rays. 
+
+Hitcount: 92733 
+Spheres hit: 13637 
+Triangles hit: 79096 
+Missed ray: 214467 
+
+Ties: 0 
+
+Image successfully saved!
+
+
+FreeImage 3.15.0
+This program uses FreeImage, a free, open source image library supporting all common bitmap formats. See http://freeimage.sourceforge.net for details.
+

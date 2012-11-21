@@ -9,6 +9,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <climits>
 #include "structs.h"
 
 using namespace std;
@@ -80,6 +81,12 @@ extern int trinormcount;
 extern int raycount;
 extern int objcount;
 extern int hitcount;
+extern int tiecount;
+
+//debug
+extern int spherehitcount;
+extern int trihitcount;
+extern int misscount;
 
 //**************************//
 //  Materials Specifiations //

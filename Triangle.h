@@ -6,6 +6,6 @@ public:
     Triangle();
     virtual ~Triangle();
     
-    static bool intersect (tri t, ray r);
+    static hitShape intersect (tri t, ray r);
 
 };

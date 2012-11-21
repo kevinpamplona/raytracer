@@ -6,6 +6,6 @@ public:
     Sphere();
     virtual ~Sphere();
     
-    static bool intersect (sphere s, ray r);
+    static hitShape intersect (sphere s, ray r);
     
 };

@@ -7,7 +7,9 @@ public:
     Intersect();
     virtual ~Intersect();
     
-    static bool hit(ray r);
+    static Hit hit(ray r, bool debug);
+    static float getDepth(ray r, float t, glm::vec3 p);
+    static int getNearestObject(hitShape s, hitShape t);
 };
 
 

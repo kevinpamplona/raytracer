@@ -1,8 +1,12 @@
 
 #include "Sphere.h"
 #include "Objects.h"
+#include "Intersect.h"
 
-bool Sphere::intersect (sphere s, ray r) {
+
+hitShape Sphere::intersect (sphere s, ray r) {
+    
+    hitShape hitS;
     
     glm::vec3 sphere_center = s.center;
     glm::vec3 ray_origin = r.ori;
@@ -18,7 +22,8 @@ bool Sphere::intersect (sphere s, ray r) {
     float disc = (b*b) - (4*a*c);
     
     if (disc < 0) {
-        return false;
+        hitS.hit = false;
+        return hitS;
     }
     
     float first_root = (-b + sqrt(disc))/(2*a);
@@ -26,17 +31,25 @@ bool Sphere::intersect (sphere s, ray r) {
     
     //curve tangent to circle
     if (first_root == second_root) {
-        return false;
+        hitS.hit = false;
+        return hitS;
     }
     
     if ((first_root > 0) && (second_root > 0)) {
         // min (first_root, second_root)
-        return true;
+        hitS.depth = min(first_root, second_root);
+        hitS.hit = true;
+        return hitS;
         
     }
 
     if (((first_root>0) && (second_root<0)) || ((first_root<0) && (second_root>0))) {
         // max(first_root, second_root)
-        return true;
+        hitS.depth = max(first_root, second_root);
+        hitS.hit = true;
+        return hitS;
+    } else {
+        hitS.hit = false;
+        return hitS;
     }
 }
