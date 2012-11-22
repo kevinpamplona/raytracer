@@ -4,57 +4,18 @@
 #include "structs.h"
 #include "Sphere.h"
 #include "Triangle.h"
-/*
-Hit Intersect::hit(ray r) {
-    
-    Hit rayHit;
-    
-    int hitSphere = 0;
-    int hitTri = 0;
-    int hitTriN = 0;
-    
-    if (spherecount > 0) {
-        for (int i = 0; i < spherecount; i++) {
-            bool hit = false;
-            sphere s = spheres[i];
-            hit = Sphere::intersect(s, r);
-            if (hit) {
-                hitSphere += 1;
-            }
-        }
-    }
-    
-    if (tricount > 0) {
-        for (int i = 0; i < tricount; i++) {
-            bool hit = false;
-            tri t = triangles[i];
-            hit = Triangle::intersect(t, r);
-            if (hit) {
-                hitTri += 1;
-            }
-        }
-    }
-    
-    if (trinormcount > 0) {
-        for (int i = 0; i < trinormcount; i++) {
-            //triN = trinormals[i];
-            // Need to implement TriNormal.cpp
-        }
-    }
-    
-    //return ( hitSphere > 0 || hitTri > 0 || hitTriN > 0);
-    
-    return rayHit;
-}
-*/
 
 Hit Intersect::hit(ray r, bool debug) {
     
     Hit rayHit;
+    rayHit.r = r;
     
     int hitSphere = 0;
     int hitTri = 0;
     int hitTriN = 0;
+    
+    int triIndex = 0;
+    int sphereIndex = 0;
     
     hitShape nearestSphere;
     nearestSphere.depth = INT_MAX;
@@ -84,11 +45,13 @@ Hit Intersect::hit(ray r, bool debug) {
                 hitSphere++;
                 if (sphereFill) {
                     if (hs.depth < nearestSphere.depth) {
+                        sphereIndex = i;
                         nearestSphere = hs;
                     }
                 }
                 else {
                     nearestSphere = hs;
+                    sphereIndex = i;
                     sphereFill = true;
                 }
             }
@@ -99,18 +62,20 @@ Hit Intersect::hit(ray r, bool debug) {
         for (int i = 0; i < tricount; i++) {
             hitShape hs;
             hs.hit = false;
-            hs.index = i;
+            //hs.index = i;
             tri t = triangles[i];
             hs = Triangle::intersect(t,r);
             if (hs.hit) {
                 hitTri++;
                 if (triFill) {
                     if (hs.depth < nearestTri.depth) {
+                        triIndex = i;
                         nearestTri = hs;
                     }
                 }
                 else {
                     nearestTri = hs;
+                    triIndex = i;
                     triFill = true;
                 }
             }
@@ -147,13 +112,23 @@ Hit Intersect::hit(ray r, bool debug) {
         spherehitcount++;
         rayHit.hit = true;
         rayHit.prim = 0;
-        rayHit.shape = nearestSphere.index;
+        rayHit.isect = nearestSphere.isect;
+        rayHit.shape = sphereIndex;
+        if (rayHit.shape > spherecount) {
+            cout << "Sphere index over bounds: " << rayHit.shape << " \n";
+            exit(1);
+        }
         return rayHit;
     } else {
         trihitcount++;
         rayHit.hit = true;
         rayHit.prim = 1;
-        rayHit.shape = nearestTri.index;
+        rayHit.isect = nearestTri.isect;
+        rayHit.shape = triIndex;
+        if (rayHit.shape > tricount) {
+            cout << "Tri index over bounds: " << rayHit.shape << " \n";
+            exit(1);
+        }
         return rayHit;
     }
 }

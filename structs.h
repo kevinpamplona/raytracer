@@ -6,8 +6,17 @@
 struct sphere
 {
     glm::vec3 center;
-    
     float radius;
+    
+    glm::mat4 tmat;
+    
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+    float shininess;
+    glm::vec3 emission;
+    
+    glm::vec3 scale;
 };
 #endif
 
@@ -18,8 +27,13 @@ struct tri
     glm::vec3 v1;
     glm::vec3 v2;
     glm::vec3 v3;
-    
     glm::vec3 normal;
+    
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+    float shininess;
+    glm::vec3 emission;
 };
 
 #endif
@@ -64,6 +78,18 @@ struct Hit
     bool hit;
     int prim;
     int shape;
+    glm::vec3 isect;
+    ray r;
+};
+#endif
+
+#ifndef _ShapeW_h
+#define _ShapeW_h
+struct ShapeW
+{
+    bool flag;
+    sphere s;
+    tri t;
 };
 #endif
 
@@ -74,10 +100,40 @@ struct hitShape
     bool hit;
     float depth;
     int index;
+    glm::vec3 isect;
+
 };
 #endif
 
+#ifndef _dLight_h
+#define _dLight_h
+struct dLight
+{
+    glm::vec3 pos;
+    glm::vec3 col;
+    glm::vec3 atten;
+};
+#endif
 
+#ifndef _pLight_h
+#define _pLight_h
+struct pLight
+{
+    glm::vec3 pos;
+    glm::vec3 col;
+    glm::vec3 atten;
+};
+#endif
+
+#ifndef _Color_h
+#define _Color_h
+struct Color
+{
+    float red;
+    float green;
+    float blue;
+};
+#endif
 
 
 

@@ -2,6 +2,22 @@
 #include "variables.h"
 #include "Camera.h"
 #include "Objects.h"
+#include "Transform.h"
+
+
+void matransform(stack<mat4> &transfstack, float * values) {
+    mat4 transform = transfstack.top() ;
+    vec4 valvec = vec4(values[0],values[1],values[2],values[3]) ;
+    vec4 newval = valvec * transform ;
+    for (int i = 0 ; i < 4 ; i++) values[i] = newval[i] ;
+}
+
+void rightmultiply(const mat4 & M, stack<mat4> &transfstack) {
+    mat4 &T = transfstack.top() ;
+    // Right multiply M, but do this left to account for row/column major
+    T = M * T ;
+}
+
 // helper function to read input data files
 bool ReadScene::readVals(stringstream &s, const int numvals, float * values) {
     for (int i = 0 ; i < numvals ; i++) {
@@ -16,12 +32,13 @@ bool ReadScene::readVals(stringstream &s, const int numvals, float * values) {
 
 void ReadScene::readFile(const char * filename) {
     
-    string str, cmd;
+    string str, cmd, filen;
     ifstream in;
     in.open(filename);
     
     float values[10];
     bool validinput;
+    trstack.push(mat4(1.0));
     
     if (in.is_open()) {
         
@@ -50,9 +67,9 @@ void ReadScene::readFile(const char * filename) {
                     }
                 }
                 else if (cmd == "output") {
-                        //s >> filename;
-                        //set prior default, update if necessary
-                    }
+                    filen = s.str();
+                    fileout = filen;
+                }
                 // EO GENERAL commands
                 
                 // CAMERA command
@@ -116,33 +133,88 @@ void ReadScene::readFile(const char * filename) {
                         trinormals.push_back(Objects::makeTriNormal(values));
                     }
                 }
-                
-                else if (cmd == "translate") {}
-                else if (cmd == "rotate") {}
-                else if (cmd == "scale") {}
-                
-                else if (cmd == "pushTransform") {}
-                else if (cmd == "popTransform") {}
-                
-                else if (cmd == "directional") {}
-                else if (cmd == "point") {}
-                else if (cmd == "attenuation") {}
-                else if (cmd == "ambient") {}
-                
+                else if (cmd == "translate") {
+                    validinput = readVals(s,3,values);
+                    if (validinput) {
+                        cout << "ttttt\n";
+                        glm::mat4 trans_mat = Transform::translate(values[0],values[1],values[2]);
+                        rightmultiply(trans_mat,trstack);
+                    }
+                }
+                else if (cmd == "rotate") {
+                    validinput = readVals(s,4,values);
+                    if (validinput) {
+                        cout << "rrrrrr\n";
+                        glm::vec3 axis = glm::normalize(vec3(values[0], values[1], values[2]));
+                        glm::mat3 temp = Transform::rotate(values[3], axis);
+                        glm::mat4 rot_mat = mat4(temp);
+                        rightmultiply(rot_mat,trstack);
+                    }
+                }
+                else if (cmd == "scale") {
+                    validinput = readVals(s,3,values);
+                    if (validinput) {
+                        glm::mat4 scale_mat = Transform::scale(values[0],values[1],values[2]);
+                        rightmultiply(scale_mat,trstack);
+                        scaleV.x = values[0];
+                        scaleV.y = values[1];
+                        scaleV.z = values[2];
+                    } 
+                }
+                else if (cmd == "pushTransform") {
+                    trstack.push(trstack.top());
+                }
+                else if (cmd == "popTransform") {
+                    if (trstack.size() <= 1) {
+                        cerr << "Stack has no elements.  Cannot Pop\n" ;
+                    } else {
+                        trstack.pop() ;
+                    }
+                }
+                else if (cmd == "directional") {
+                    validinput = readVals(s, 6, values);
+                    if (validinput) {
+                        numLights++;
+                        dLights.push_back(Objects::makeDLight(values));
+                    }
+                }
+                else if (cmd == "point") {
+                    validinput = readVals(s, 6, values);
+                    if (validinput) {
+                        numLights++;
+                        pLights.push_back(Objects::makePLight(values));
+                    }
+                }
+                else if (cmd == "attenuation") {
+                    validinput = readVals(s, 3, values);
+                    if (validinput) {
+                        attenuation.x = values[0];
+                        attenuation.y = values[1];
+                        attenuation.z = values[2];
+                    }
+                }
+                else if (cmd == "ambient") {
+                    validinput = readVals(s, 3, values);
+                    if (validinput) {
+                        ambient.x = values[0];
+                        ambient.y = values[1];
+                        ambient.z = values[2];
+                    }
+                }
                 else if (cmd == "diffuse") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
-                        for (int i=0; i<3; i++) {
-                            diffuse[i] = values[i];
-                        }
+                        diffuse.x = values[0];
+                        diffuse.y = values[1];
+                        diffuse.z = values[2];
                     }
                 }
                 else if (cmd == "specular") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
-                        for (int i=0; i<3; i++) {
-                            specular[i] = values[i];
-                        }
+                        specular.x = values[0];
+                        specular.y = values[1];
+                        specular.z = values[2];
                     }
                 }
                 else if (cmd == "shininess") {
@@ -154,9 +226,9 @@ void ReadScene::readFile(const char * filename) {
                 else if (cmd == "emission") {
                     validinput = readVals(s, 3, values);
                     if (validinput) {
-                        for (int i=0; i<3; i++) {
-                            emission[i] = values[i];
-                        }
+                        emission.x = values[0];
+                        emission.y = values[1];
+                        emission.z = values[2];
                     }
                 }
                 else {

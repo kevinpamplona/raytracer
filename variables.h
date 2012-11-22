@@ -11,6 +11,8 @@
 #include <sstream>
 #include <climits>
 #include "structs.h"
+#include <stack>
+
 
 using namespace std;
 
@@ -25,7 +27,8 @@ extern int height;
 extern int depth;
 
 // the output file to which the image should be written
-extern string filename;
+extern string fileout;
+extern bool nameGiven;
 
 // camera specifiations (should i put in a struct?)
 extern float lookfromx;
@@ -50,6 +53,10 @@ extern glm::vec3 v;
 //***************************//
 //  Geometry Specifications  //
 //***************************//
+
+// Transformations
+extern stack<glm::mat4> trstack;
+extern glm::vec3 scaleV;
 
 // specifies the number of vertrices for tri specifications
 extern int maxverts;
@@ -82,6 +89,7 @@ extern int raycount;
 extern int objcount;
 extern int hitcount;
 extern int tiecount;
+extern int numLights;
 
 //debug
 extern int spherehitcount;
@@ -91,11 +99,19 @@ extern int misscount;
 //**************************//
 //  Materials Specifiations //
 //**************************//
+extern vector<dLight> dLights;
+extern vector<pLight> pLights;
+extern glm::vec3 attenuation;
+extern glm::vec3 ambient;
 
-extern float diffuse[3];
-extern float specular[3];
+//**************************//
+//  Materials Specifiations //
+//**************************//
+
+extern glm::vec3 diffuse;
+extern glm::vec3 specular;
 extern float shininess;
-extern float emission[3];
+extern glm::vec3 emission;
 
 //**************************//
 //    Final Output Image    //

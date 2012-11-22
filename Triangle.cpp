@@ -32,6 +32,7 @@ hitShape Triangle::intersect(tri t, ray r) {
     
     if (check_one >= 0 && check_two >= 0 && check_three >= 0) {
         hitS.hit = true;
+        hitS.isect = r.ori + (r.dir * param);
         return hitS;
     }
     

@@ -6,6 +6,7 @@
 #include "Sphere.h"
 #include "Intersect.h"
 #include "Film.h"
+#include "Paint.h"
 #include "structs.h"
 
 // width and height specify image size
@@ -16,7 +17,8 @@ int height = 0;
 int depth = 5;
 
 // the output file to which the image should be written
-string filename = "output";
+string fileout = "out.txt";
+bool nameGiven = false;
 
 // camera specifiations (should i put in a struct?)
 float lookfromx = 0;
@@ -34,6 +36,10 @@ float fovy = 0;
 //***************************//
 //  Geometry Specifications  //
 //***************************//
+
+//Transformations
+stack<glm::mat4> trstack;
+glm::vec3 scaleV = glm::vec3(0,0,0);
 
 // specifies the number of vertrices for tri specifications
 int maxverts = 0;
@@ -65,6 +71,7 @@ int trinormcount = 0;
 int raycount = 0;
 int objcount = 0;
 int hitcount = 0;
+int numLights = 0;
 
 //debug
 int spherehitcount = 0;
@@ -75,11 +82,19 @@ int tiecount = 0;
 //**************************//
 //  Materials Specifiations //
 //**************************//
+vector<dLight> dLights;
+vector<pLight> pLights;
+glm::vec3 attenuation = glm::vec3(1,0,0);
+glm::vec3 ambient;
 
-float diffuse[3];
-float specular[3];
-float shininess;
-float emission[3];
+//**************************//
+//  Materials Specifiations //
+//**************************//
+
+glm::vec3 diffuse;
+glm::vec3 specular;
+float shininess = 1.0;
+glm::vec3 emission;
 
 //***************************//
 //   Camera Specifications  //
@@ -129,6 +144,42 @@ void initCamera() {
     
 }
 
+void printColor(Color c) {
+    cout << "R: " << c.red << "\n";
+    cout << "G: " << c.green << "\n";
+    cout << "B: " << c.blue << "\n";
+}
+
+
+void printProgress(int i, int j) {
+    if (i==floor(width*0.10) && j == height-1) {
+        cout << "10%...\n";
+    }
+    if (i==floor(width*0.20) && j == height-1) {
+        cout << "20%...\n";
+    }
+    if (i==floor(width*0.30) && j == height-1) {
+        cout << "30%...\n";
+    }
+    if (i==floor(width*0.40) && j == height-1) {
+        cout << "40%...\n";
+    }
+    if (i==floor(width*0.50) && j == height-1) {
+        cout << "50%...\n";
+    }
+    if (i==floor(width*0.60) && j == height-1) {
+        cout << "60%...\n";
+    }
+    if (i==floor(width*0.70) && j == height-1) {
+        cout << "70%...\n";
+    }
+    if (i==floor(width*0.80) && j == height-1) {
+        cout << "80%...\n";
+    }
+    if (i==floor(width*0.90) && j == height-1) {
+        cout << "90%...\n";
+    }
+}
  
 // Test function to make sure FreeImage has been imported correctly
 void testPrint() {
@@ -162,7 +213,7 @@ void init() {
     cout << "Reading in scene file... \n";
     cout << "Image size has been set to a " << width << " x " << height << " output. \n";
     cout << "The maximum recursion depth has been set to " << depth << ". \n";
-    cout << "The image will be output to " << filename << ".png. \n";
+    cout << "The image will be output to " << fileout << ".png. \n";
     
     cout << "The camera has been instantiated with the following properties: \n";
     cout << "\t POSITION: (" << lookfromx << ", " << lookfromy << ", " << lookfromz << ") \n";
@@ -177,7 +228,9 @@ void init() {
     cout << "An amount of " << spherecount << " spheres have been specified. \n";
     cout << "An amount of " << tricount << " triangles have been specified. \n";
     cout << "An amount of " << trinormcount << " triangles with calculated vertex normals have been specified. \n";
-    cout << "A total of " << objcount << " objects have been specified. \n\n";
+    cout << "A total of " << objcount << " objects have been specified. \n";
+    
+    cout << "Number of lights: " << numLights << " \n\n";
 }
 
 int testRayDir() {
@@ -227,49 +280,6 @@ int main (int argc, char * argv[]) {
     
     cout << "Calculating all pixel values...\n";
     
-    int pw = width/2;
-    int ph = height/2-12;
-    bool debug = false;
-    
-    for (int i = 0; i < width; i++) {
-        for (int j = 0; j < height; j++) {
-            if (i == pw && j == ph) {
-                debug = true;
-            }
-            ray r = Camera::shootRay(i,j);
-            Hit hit = Intersect::hit(r, debug);
-            debug = false;
-            if (hit.hit) {
-                hitcount += 1;
-                
-                if (hit.prim == 0) {
-                    bitmap[i][j][0] = 1;
-                    bitmap[i][j][1] = 1;
-                    bitmap[i][j][2] = 0;
-                } else if (hit.prim == 1) {
-                    bitmap[i][j][0] = 1;
-                    bitmap[i][j][1] = 0;
-                    bitmap[i][j][2] = 0;
-                }
-            } else {
-                bitmap[i][j][0] = 0;
-                bitmap[i][j][1] = 0;
-                bitmap[i][j][2] = 0;
-            }
-       }
-    }
-    
-    bitmap[pw][ph][0] = 0;
-    bitmap[pw][ph][1] = 0;
-    bitmap[pw][ph][2] = 1;
-    
-    cout << "Raytacer has shot: " << raycount << " rays. \n\n";
-    cout << "Hitcount: " << hitcount << " \n";
-    cout << "Spheres hit: " << spherehitcount << " \n";
-    cout << "Triangles hit: " << trihitcount << " \n";
-    cout << "Missed ray: " << misscount << " \n\n";
-    cout << "Ties: " << tiecount << " \n\n";
-
     
     FIBITMAP* IMG = FreeImage_Allocate(width,height,BPP);
     RGBQUAD color;
@@ -278,7 +288,61 @@ int main (int argc, char * argv[]) {
         exit(1);
     }
     
+    int pw = width/2 + 12;
+    int ph = height/2 + 12;
     
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            printProgress(i,j);
+            float m = i + 0.5;
+            float n = j + 0.5;
+            ray r = Camera::shootRay(m,n);
+            Hit hit = Intersect::hit(r, false);
+            if (hit.hit) {
+                hitcount += 1;
+                
+                Color col = Paint::computeColor(hit);
+                //printColor(col);
+                
+                float r = col.blue;
+                float g = col.green;
+                float b = col.red;
+
+                color.rgbRed = r * 255.0;
+                color.rgbGreen = g * 255.0;
+                color.rgbBlue = b * 255.0;
+                
+                if (i == pw && j == ph) {
+                    color.rgbRed = 0 ;
+                    color.rgbGreen = 0;
+                    color.rgbBlue = 255.0;
+                }
+                
+                FreeImage_SetPixelColor(IMG,i,height-j,&color);               
+                
+                /*
+                bitmap[i][j][0] = 1;//col.red;
+                bitmap[i][j][1] = 0;//col.green;
+                bitmap[i][j][2] = 1;//col.blue;
+                */
+                
+            } else {
+                bitmap[i][j][0] = 1; //blue
+                bitmap[i][j][1] = 1; //green
+                bitmap[i][j][2] = 1; //red
+            }
+       }
+    }
+    
+    cout << "Raytacer has shot: " << raycount << " rays. \n\n";
+    cout << "Hitcount: " << hitcount << " \n";
+    cout << "Spheres hit: " << spherehitcount << " \n";
+    cout << "Triangles hit: " << trihitcount << " \n";
+    cout << "Missed ray: " << misscount << " \n\n";
+    cout << "Ties: " << tiecount << " \n\n";
+
+
+    /*
     for (int i=0; i<width; i++) {
         for (int j=0; j<height; j++) {
             float r = bitmap[i][j][0];
@@ -292,6 +356,7 @@ int main (int argc, char * argv[]) {
             FreeImage_SetPixelColor(IMG,i,height-j,&color);
         }
     }
+    */
     
     if (FreeImage_Save(FIF_PNG, IMG, "test.png", 0)) {
         cout << "Image successfully saved!\n\n\n";
