@@ -68,6 +68,7 @@ struct ray
     glm::vec3 dir;
     glm::vec3 ori;
     float t;
+    int rec;
 };
 #endif
 

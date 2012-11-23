@@ -14,7 +14,7 @@ int width = 0;
 int height = 0;
 
 // maximum depth for a ray (level of recursion)
-int depth = 5;
+int recursionDepth = 5;
 
 // the output file to which the image should be written
 string fileout = "out.txt";
@@ -73,6 +73,7 @@ int objcount = 0;
 int hitcount = 0;
 int numLights = 0;
 int shadowPixels = 0;
+int reflections = 0;
 
 
 //debug
@@ -214,7 +215,7 @@ void init() {
     cout << "\n\n************************************\n";
     cout << "Reading in scene file... \n";
     cout << "Image size has been set to a " << width << " x " << height << " output. \n";
-    cout << "The maximum recursion depth has been set to " << depth << ". \n";
+    cout << "The maximum recursion depth has been set to " << recursionDepth << ". \n";
     cout << "The image will be output to " << fileout << ".png. \n";
     
     cout << "The camera has been instantiated with the following properties: \n";
@@ -299,8 +300,9 @@ int main (int argc, char * argv[]) {
         for (int j = 0; j < height; j++) {
             printProgress(i,j);
             float m = i + 0.5;
-            float n = j + 0.5;
+            float n = j - 0.5;
             ray r = Camera::shootRay(m,n);
+            r.rec = 0;
             Hit hit = Intersect::hit(r, 0, 0);
             if (hit.hit) {
                 hitcount += 1;
@@ -345,7 +347,9 @@ int main (int argc, char * argv[]) {
     cout << "Missed ray: " << misscount << " \n\n";
     cout << "Ties: " << tiecount << " \n";
     
-    cout << "Pixels in shadow: " << shadowPixels << "\n\n";
+    cout << "Pixels in shadow: " << shadowPixels << "\n";
+    
+    cout << "Amount of reflected rays: " << reflections << "\n\n";
 
 
     /*

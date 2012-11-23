@@ -52,6 +52,7 @@ void ReadScene::readFile(const char * filename) {
                 stringstream s (str);
                 s >> cmd;
                 
+                
                 // GENERAL commands
                 if (cmd == "size") {
                     validinput = readVals(s, 2, values);
@@ -63,12 +64,14 @@ void ReadScene::readFile(const char * filename) {
                 else if (cmd == "maxdepth") {
                     validinput = readVals(s, 1, values);
                     if (validinput) {
-                        depth = values[0];
+                        recursionDepth = values[0];
                     }
                 }
                 else if (cmd == "output") {
+                    s >> filen;
                     filen = s.str();
                     fileout = filen;
+                    cout << fileout;
                 }
                 // EO GENERAL commands
                 
@@ -136,7 +139,6 @@ void ReadScene::readFile(const char * filename) {
                 else if (cmd == "translate") {
                     validinput = readVals(s,3,values);
                     if (validinput) {
-                        cout << "ttttt\n";
                         glm::mat4 trans_mat = Transform::translate(values[0],values[1],values[2]);
                         rightmultiply(trans_mat,trstack);
                     }
@@ -144,7 +146,6 @@ void ReadScene::readFile(const char * filename) {
                 else if (cmd == "rotate") {
                     validinput = readVals(s,4,values);
                     if (validinput) {
-                        cout << "rrrrrr\n";
                         glm::vec3 axis = glm::normalize(vec3(values[0], values[1], values[2]));
                         glm::mat3 temp = Transform::rotate(values[3], axis);
                         glm::mat4 rot_mat = mat4(temp);

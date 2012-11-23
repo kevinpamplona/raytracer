@@ -24,7 +24,7 @@ extern int width;
 extern int height;
 
 // maximum depth for a ray (level of recursion)
-extern int depth;
+extern int recursionDepth;
 
 // the output file to which the image should be written
 extern string fileout;
@@ -91,6 +91,7 @@ extern int hitcount;
 extern int tiecount;
 extern int numLights;
 extern int shadowPixels;
+extern int reflections;
 
 //debug
 extern int spherehitcount;

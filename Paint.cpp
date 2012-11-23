@@ -195,7 +195,52 @@ Color Paint::computeColor(Hit h, int m, int n) {
                                         isect, true, glm::normalize(p.pos-isect), p.pos, m, n);
     }
     
-    final = myambient + myemission + sum;
+    Color refl;
+    glm::vec3 reflection;
+    
+    //recursion
+    if (myspecular.x == 0 && myspecular.y == 0 && myspecular.z == 0) {
+        
+        reflection = glm::vec3(0,0,0);
+        
+    } else {
+        
+        glm::vec3 v = glm::normalize(h.r.dir - h.r.ori);
+        glm::vec3 n = glm::normalize(mynormal);
+        
+        ray rf;
+        rf.ori = isect;
+        rf.dir = glm::normalize(v - 2*glm::dot(v,n)*n);
+
+        rf.ori.x += 0.001*rf.dir.x;
+        rf.ori.y += 0.001*rf.dir.y;
+        rf.ori.z += 0.001*rf.dir.z;
+        
+        rf.rec = h.r.rec + 1;
+        
+        if (rf.rec <= recursionDepth) {
+        
+            Hit rfHit = Intersect::hit(rf, 0, 0);
+        
+            if (rfHit.hit) {
+                reflections++;
+                refl = Paint::computeColor(rfHit, 0, 0);
+                reflection.x = refl.red;
+                reflection.y = refl.green;
+                reflection.z = refl.blue;
+                
+                cout << "REFLECTION: (" << reflection.x << ", " << reflection.y << ", " << reflection.z << ") \n";
+
+                
+            } else {
+                reflection = glm::vec3(0,0,0);
+            }
+        } else {
+            reflection = glm::vec3(0,0,0);
+        }
+    }
+    
+    final = myambient + myemission + sum + myspecular*reflection;
     
     final = glm::clamp(final, 0.0, 1.0);
     
