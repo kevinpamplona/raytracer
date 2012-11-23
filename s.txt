@@ -1,0 +1,71 @@
+ttttt
+ttttt
+ttttt
+ttttt
+ttttt
+ttttt
+ttttt
+ttttt
+ttttt
+rrrrrr
+ttttt
+rrrrrr
+ttttt
+ttttt
+ttttt
+ttttt
+
+
+************************************
+Reading in scene file... 
+Image size has been set to a 640 x 480 output. 
+The maximum recursion depth has been set to 5. 
+The image will be output to output scene4-diffuse.bmp.png. 
+The camera has been instantiated with the following properties: 
+	 POSITION: (0, -4, 4) 
+	 DIRECTION: (0, -1, 0) 
+	 UP: (0, 1, 1) 
+	 FIELD OF VIEW (X): 1.00919 
+
+	 FIELD OF VIEW (Y): 0.785398 
+
+An amount of 8 vertices has been specified with a maximum of 8 allowed. 
+An amount of 0 vertices with normals has been specified with a maximum of 0 allowed. 
+An amount of 6 spheres have been specified. 
+An amount of 60 triangles have been specified. 
+An amount of 0 triangles with calculated vertex normals have been specified. 
+A total of 66 objects have been specified. 
+Number of lights: 1 
+
+	 a vector: (0, -3, 4) 
+	 b vector: (0, 1, 1) 
+The constructed coordinate frame: 
+	 W vector: (0, -0.6, 0.8) 
+	 U vector: (1, 0, -0) 
+	 V vector: (0, 0.8, 0.6) 
+Creating bitmap...
+Calculating all pixel values...
+10%...
+20%...
+30%...
+40%...
+50%...
+60%...
+70%...
+80%...
+90%...
+Raytacer has shot: 307200 rays. 
+
+Hitcount: 109375 
+Spheres hit: 42933 
+Triangles hit: 66442 
+Missed ray: 307200 
+
+Ties: 0 
+
+Image successfully saved!
+
+
+FreeImage 3.15.0
+This program uses FreeImage, a free, open source image library supporting all common bitmap formats. See http://freeimage.sourceforge.net for details.
+

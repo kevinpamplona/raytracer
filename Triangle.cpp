@@ -18,6 +18,11 @@ hitShape Triangle::intersect(tri t, ray r) {
     float param = (glm::dot(t.v1,normal) - glm::dot(r.ori,normal)) / (float)glm::dot(r.dir,normal);
     hitS.depth = param;
     
+    if (param < 0) {
+        hitS.hit = false;
+        return hitS;
+    }
+    
     glm::vec3 hit = r.ori + r.dir*param;
     glm::vec3 PA = hit - t.v1;
     glm::vec3 PB = hit - t.v2;

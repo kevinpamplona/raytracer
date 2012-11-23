@@ -90,6 +90,7 @@ extern int objcount;
 extern int hitcount;
 extern int tiecount;
 extern int numLights;
+extern int shadowPixels;
 
 //debug
 extern int spherehitcount;

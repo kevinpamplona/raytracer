@@ -80,6 +80,7 @@ struct Hit
     int shape;
     glm::vec3 isect;
     ray r;
+    float depthHit;
 };
 #endif
 
@@ -101,6 +102,7 @@ struct hitShape
     float depth;
     int index;
     glm::vec3 isect;
+    float depthHit;
 
 };
 #endif

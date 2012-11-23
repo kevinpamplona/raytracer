@@ -72,6 +72,8 @@ int raycount = 0;
 int objcount = 0;
 int hitcount = 0;
 int numLights = 0;
+int shadowPixels = 0;
+
 
 //debug
 int spherehitcount = 0;
@@ -288,20 +290,22 @@ int main (int argc, char * argv[]) {
         exit(1);
     }
     
-    int pw = width/2 + 12;
-    int ph = height/2 + 12;
-    
+    int pw = width/2 - 130;
+    int ph = height/2 + 95;
+    cout << "PW: " << pw << " \n";
+    cout << "PH: " << ph << " \n";
+
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             printProgress(i,j);
             float m = i + 0.5;
             float n = j + 0.5;
             ray r = Camera::shootRay(m,n);
-            Hit hit = Intersect::hit(r, false);
+            Hit hit = Intersect::hit(r, 0, 0);
             if (hit.hit) {
                 hitcount += 1;
                 
-                Color col = Paint::computeColor(hit);
+                Color col = Paint::computeColor(hit, i, j);
                 //printColor(col);
                 
                 float r = col.blue;
@@ -339,7 +343,9 @@ int main (int argc, char * argv[]) {
     cout << "Spheres hit: " << spherehitcount << " \n";
     cout << "Triangles hit: " << trihitcount << " \n";
     cout << "Missed ray: " << misscount << " \n\n";
-    cout << "Ties: " << tiecount << " \n\n";
+    cout << "Ties: " << tiecount << " \n";
+    
+    cout << "Pixels in shadow: " << shadowPixels << "\n\n";
 
 
     /*
