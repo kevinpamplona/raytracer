@@ -8,7 +8,6 @@ ray Objects::makeRay(glm::vec3 ori, glm::vec3 dir) {
     r.dir = dir;
 }
 
-// helper function to create a vertex
 glm::vec3 Objects::makeVertex(float * values) {
     glm::vec3 v;
     
@@ -19,8 +18,6 @@ glm::vec3 Objects::makeVertex(float * values) {
     return v;
 }
  
-
-// helper function to create a vertex with specified normals
 vertexNormal Objects::makeVertNormal(float * values) {
     vertexNormal vn;
     
@@ -40,7 +37,6 @@ vertexNormal Objects::makeVertNormal(float * values) {
     return vn;
 }
 
-// helper function to create a sphere
 sphere Objects::makeSphere(float * values) {
     sphere s;
     glm::vec3 center;
@@ -65,7 +61,6 @@ sphere Objects::makeSphere(float * values) {
     return s;
 }
 
-// helper function to create a triangle
 tri Objects::makeTriangle(float * values) {
     tri t;
     
@@ -92,7 +87,6 @@ tri Objects::makeTriangle(float * values) {
     return t;
 }
 
-// helper function to create triangle with vertices that have specified normals
 triNormal Objects::makeTriNormal(float * values) {
     triNormal tn;
     
@@ -159,8 +153,6 @@ pLight Objects::makePLight(float * values) {
 
 ShapeW Objects::makeWrapper(Hit h) {
     ShapeW w;
-    //cout << "h.prim: " << h.prim << " \n";
-    //cout << "h.shape: " << h.shape << " \n";
     if (h.prim == 0) {
         w.flag = false;
         sphere sp = spheres[h.shape];

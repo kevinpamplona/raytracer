@@ -9,10 +9,6 @@ Hit Intersect::hit(ray r, int m, int n) {
     
     bool shadow = false;
     
-    if (m == 190 && n == 335) {
-    //    shadow = true;
-    }
-    
     Hit rayHit;
     rayHit.r = r;
     
@@ -35,9 +31,6 @@ Hit Intersect::hit(ray r, int m, int n) {
     int primFlag;
     
     if (spherecount > 0) {
-        //if (debug) {
-            //cout << "Sphere distances: \n";
-        //}
         for (int i = 0; i < spherecount; i++) {
             hitShape hs;
             hs.hit = false;
@@ -45,9 +38,6 @@ Hit Intersect::hit(ray r, int m, int n) {
             sphere s = spheres[i];
             hs = Sphere::intersect(s,r);
             if (hs.hit) {
-                //if (debug) {
-                //    cout << "\t" << hs.depth << " \n";
-                //}
                 hitSphere++;
                 if (sphereFill) {
                     if (hs.depth < nearestSphere.depth) {
@@ -68,7 +58,6 @@ Hit Intersect::hit(ray r, int m, int n) {
         for (int i = 0; i < tricount; i++) {
             hitShape hs;
             hs.hit = false;
-            //hs.index = i;
             tri t = triangles[i];
             hs = Triangle::intersect(t,r);
             if (hs.hit) {
@@ -88,7 +77,6 @@ Hit Intersect::hit(ray r, int m, int n) {
         }
     }
     
-    // Still need to implement
     if (trinormcount > 0) {
         for (int i = 0; i < trinormcount; i++) {
             
@@ -106,14 +94,6 @@ Hit Intersect::hit(ray r, int m, int n) {
     // 0 - sphere, 1 - tri
     primFlag = Intersect::getNearestObject(nearestSphere, nearestTri);
 
-    //if (debug) {
-    //    cout << "primFlag: " << primFlag << " \n";
-    //    cout << "Distance of nearest sphere: " << nearestSphere.depth <<" \n";
-    //    cout << "Distance of nearest triangle: " << nearestTri.depth <<" \n";
-    //}
-    
-
-    
     if (primFlag == 0) {
         spherehitcount++;
         rayHit.hit = true;
@@ -121,15 +101,6 @@ Hit Intersect::hit(ray r, int m, int n) {
         rayHit.isect = nearestSphere.isect;
         rayHit.shape = sphereIndex;
         rayHit.depthHit = nearestSphere.depth;
-        if (rayHit.shape > spherecount) {
-            cout << "Sphere index over bounds: " << rayHit.shape << " \n";
-            exit(1);
-        }
-        
-        if (shadow) {
-            cout << "Sphere being hit, number: " << sphereIndex <<"\n";
-        }
-        
         return rayHit;
     } else {
         trihitcount++;
@@ -138,15 +109,6 @@ Hit Intersect::hit(ray r, int m, int n) {
         rayHit.isect = nearestTri.isect;
         rayHit.shape = triIndex;
         rayHit.depthHit = nearestTri.depth;
-        if (rayHit.shape > tricount) {
-            cout << "Tri index over bounds: " << rayHit.shape << " \n";
-            exit(1);
-        }
-        
-        if (shadow) {
-            cout << "Tri being hit, number: " << triIndex << "\n";
-        }
-        
         return rayHit;
     }
 }

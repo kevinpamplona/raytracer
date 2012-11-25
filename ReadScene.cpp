@@ -14,11 +14,9 @@ void matransform(stack<mat4> &transfstack, float * values) {
 
 void rightmultiply(const mat4 & M, stack<mat4> &transfstack) {
     mat4 &T = transfstack.top() ;
-    // Right multiply M, but do this left to account for row/column major
     T = M * T ;
 }
 
-// helper function to read input data files
 bool ReadScene::readVals(stringstream &s, const int numvals, float * values) {
     for (int i = 0 ; i < numvals ; i++) {
         s >> values[i] ;
@@ -44,16 +42,11 @@ void ReadScene::readFile(const char * filename) {
         
         getline(in, str);
         while (in) {
-            //cout << "Reading current line: [" << str << "] \n";
-            //cout << "First character in the string is: " << str[0] << " \n";
-            // following if-statement ignores comments and blank lines
             if ((str.find_first_not_of(" \t\r\n") != string::npos) && (str[0] != '#')) {
                 
                 stringstream s (str);
                 s >> cmd;
                 
-                
-                // GENERAL commands
                 if (cmd == "size") {
                     validinput = readVals(s, 2, values);
                     if (validinput) {
@@ -73,9 +66,6 @@ void ReadScene::readFile(const char * filename) {
                     fileout = filen;
                     cout << fileout;
                 }
-                // EO GENERAL commands
-                
-                // CAMERA command
                 else if (cmd == "camera") {
                     validinput = readVals(s, 10, values);
                     if (validinput) {
@@ -83,8 +73,6 @@ void ReadScene::readFile(const char * filename) {
                     }
                     
                 }
-                // EO CAMERA command
-                
                 else if (cmd == "maxverts") {
                     validinput = readVals(s, 1, values);
                     if (validinput) {
@@ -111,7 +99,6 @@ void ReadScene::readFile(const char * filename) {
                         vertnormals.push_back(Objects::makeVertNormal(values));
                     }
                 }
-                
                 else if (cmd == "sphere") {
                     validinput = readVals(s, 4, values);
                     if (validinput) {

@@ -109,12 +109,8 @@ glm::vec3 w;
 glm::vec3 u;
 glm::vec3 v;
 
-//
+// FreeImage 
 int BPP = 24;
-
-void printVector(glm::vec3 v) {
-    cout << "(" << v.x << ", " << v.y << ", " << v.z << ") \n";
-}
 
 void initCamera() {
     eye.x = lookfromx;
@@ -131,28 +127,11 @@ void initCamera() {
     
     glm::vec3 a = eye-center;
     glm::vec3 b = up;
-    
-    cout << "\t a vector: "; printVector(a);
-    cout << "\t b vector: "; printVector(b);
-    
+
     w = glm::normalize(a);
     u = glm::normalize(glm::cross(b,w));
     v = glm::cross(w,u);
-    
-    cout << "The constructed coordinate frame: \n";
-
-    cout << "\t W vector: "; printVector(w);
-    cout << "\t U vector: "; printVector(u);
-    cout << "\t V vector: "; printVector(v);
-    
 }
-
-void printColor(Color c) {
-    cout << "R: " << c.red << "\n";
-    cout << "G: " << c.green << "\n";
-    cout << "B: " << c.blue << "\n";
-}
-
 
 void printProgress(int i, int j) {
     if (i==floor(width*0.10) && j == height-1) {
@@ -183,33 +162,6 @@ void printProgress(int i, int j) {
         cout << "90%...\n";
     }
 }
- 
-// Test function to make sure FreeImage has been imported correctly
-void testPrint() {
-
-    FIBITMAP* bitmap = FreeImage_Allocate(width,height,BPP);
-    RGBQUAD color;
-    
-    if (!bitmap) {
-        exit(1);
-    }
-    
-    for (int i=0; i<width; i++) {
-        for (int j=0; j<height; j++) {
-            color.rgbRed = 0;
-            color.rgbGreen = (double)i / width * 255.0;
-            color.rgbBlue = (double)j / height * 255.0;
-            
-            FreeImage_SetPixelColor(bitmap,i,j,&color);
-        }
-    }
-    
-    if (FreeImage_Save(FIF_PNG, bitmap, "test.png", 0)) {
-        cout << "Image successfully saved!\n";
-    } else {
-        cout << "Image not saved..";    
-    }
-}
 
 void init() {
     cout << "\n\n************************************\n";
@@ -236,42 +188,6 @@ void init() {
     cout << "Number of lights: " << numLights << " \n\n";
 }
 
-int testRayDir() {
-    
-    int i = 0;
-    int j = 0;
-    
-    cout << "The camera has been instantiated with the following properties: \n";
-    cout << "\t POSITION: (" << lookfromx << ", " << lookfromy << ", " << lookfromz << ") \n";
-    cout << "\t DIRECTION: (" << lookatx << ", " << lookaty << ", " << lookatz << ") \n";
-    cout << "\t UP: (" << upx << ", " << upy << ", " << upz << ") \n";
-    cout << "\t FIELD OF VIEW (Y): " << fovy << " \n\n\n\n\n";
-    
-    cout << "Calculating coordinate frame... \n";
-    glm::vec3 a = eye-center;
-    glm::vec3 b = up;
-    
-    cout << "\t a vector: "; printVector(a);
-    cout << "\t b vector: "; printVector(b);
-    
-    w = glm::normalize(a);
-    u = glm::normalize(glm::cross(b,w));
-    v = glm::cross(w,u);
-    
-    cout << "The constructed coordinate frame: \n";
-    
-    cout << "\t W vector: "; printVector(w);
-    cout << "\t U vector: "; printVector(u);
-    cout << "\t V vector: "; printVector(v);
-    
-    cout << "Testing ray at: " << i << " " << j << "\n";
-    ray r = Camera::shootRay(i,j);
-
-    cout << "\t RAY ORIGIN: "; printVector(r.ori);
-    cout << "\t RAY DIR: "; printVector(r.dir);
-}
-
-
 int main (int argc, char * argv[]) {
     FreeImage_Initialise();
     ReadScene::readFile(argv[1]);
@@ -291,47 +207,29 @@ int main (int argc, char * argv[]) {
         exit(1);
     }
     
-    int pw = width/2 - 130;
-    int ph = height/2 + 95;
+    int pw = width/2 + 110;
+    int ph = height/2 - 40;
     cout << "PW: " << pw << " \n";
     cout << "PH: " << ph << " \n";
 
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             printProgress(i,j);
-            float m = i + 0.5;
-            float n = j - 0.5;
+            float m = (float)i + 0.5;
+            float n = (float)j - 0.5;
             ray r = Camera::shootRay(m,n);
             r.rec = 0;
             Hit hit = Intersect::hit(r, 0, 0);
             if (hit.hit) {
                 hitcount += 1;
-                
                 Color col = Paint::computeColor(hit, i, j);
-                //printColor(col);
-                
                 float r = col.blue;
                 float g = col.green;
                 float b = col.red;
-
                 color.rgbRed = r * 255.0;
                 color.rgbGreen = g * 255.0;
                 color.rgbBlue = b * 255.0;
-                
-                if (i == pw && j == ph) {
-                    color.rgbRed = 0 ;
-                    color.rgbGreen = 0;
-                    color.rgbBlue = 255.0;
-                }
-                
                 FreeImage_SetPixelColor(IMG,i,height-j,&color);               
-                
-                /*
-                bitmap[i][j][0] = 1;//col.red;
-                bitmap[i][j][1] = 0;//col.green;
-                bitmap[i][j][2] = 1;//col.blue;
-                */
-                
             } else {
                 bitmap[i][j][0] = 1; //blue
                 bitmap[i][j][1] = 1; //green
@@ -339,43 +237,14 @@ int main (int argc, char * argv[]) {
             }
        }
     }
-    
     cout << "Raytacer has shot: " << raycount << " rays. \n\n";
     cout << "Hitcount: " << hitcount << " \n";
     cout << "Spheres hit: " << spherehitcount << " \n";
     cout << "Triangles hit: " << trihitcount << " \n";
     cout << "Missed ray: " << misscount << " \n\n";
     cout << "Ties: " << tiecount << " \n";
-    
     cout << "Pixels in shadow: " << shadowPixels << "\n";
-    
     cout << "Amount of reflected rays: " << reflections << "\n\n";
-
-
-    /*
-    for (int i=0; i<width; i++) {
-        for (int j=0; j<height; j++) {
-            float r = bitmap[i][j][0];
-            float g = bitmap[i][j][1];
-            float b = bitmap[i][j][2];
-            
-            color.rgbRed = r * 255.0;
-            color.rgbGreen = g * 255.0;
-            color.rgbBlue = b * 255.0;
-                        
-            FreeImage_SetPixelColor(IMG,i,height-j,&color);
-        }
-    }
-    */
-    
-    if (FreeImage_Save(FIF_PNG, IMG, "test.png", 0)) {
-        cout << "Image successfully saved!\n\n\n";
-    } else {
-        cout << "Image not saved..";
-    }
-    
-    cout << "FreeImage " << FreeImage_GetVersion() << "\n";
-    cout << FreeImage_GetCopyrightMessage() << ".\n\n";
     FreeImage_DeInitialise();
     return 0;
 }

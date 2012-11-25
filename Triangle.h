@@ -7,5 +7,4 @@ public:
     virtual ~Triangle();
     
     static hitShape intersect (tri t, ray r);
-
 };
